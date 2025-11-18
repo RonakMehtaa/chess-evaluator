@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import-pgn": "npx tsc --outDir ./.tmp_scripts --module commonjs --target ES2019 --esModuleInterop true ./scripts/importPgnToLevel1.ts ./src/utils/pgnConverter.ts && node ./.tmp_scripts/scripts/importPgnToLevel1.js && npm run cleanup-tmp",
+    "autofill-pgn": "npx tsc --outDir ./.tmp_scripts --module commonjs --target ES2019 --esModuleInterop true ./scripts/autofillSolutionsFromPgn.ts && node ./.tmp_scripts/autofillSolutionsFromPgn.js && npm run cleanup-tmp",
+    "populate-opponent-moves": "npx tsc --outDir ./.tmp_scripts --module commonjs --target ES2019 --esModuleInterop true ./scripts/populateOpponentMoves.ts ./src/utils/pgnConverter.ts && node ./.tmp_scripts/scripts/populateOpponentMoves.js && npm run cleanup-tmp",
+    "fix-fens": "npx tsc --outDir ./.tmp_scripts --module commonjs --target ES2019 --esModuleInterop true ./scripts/fixLevel1Fens.ts ./src/utils/pgnConverter.ts && node ./.tmp_scripts/scripts/fixLevel1Fens.js && npm run cleanup-tmp",
+    "cleanup-tmp": "rm -r -Force ./.tmp_scripts 2>$null || true"
   },
   "dependencies": {
     "chess.js": "^1.4.0",
@@ -17,12 +22,13 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

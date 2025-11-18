@@ -1,0 +1,259 @@
+[
+  {
+    "id": 101,
+    "name": "Level 1 - Puzzle 1",
+    "difficulty": "Level 1",
+    "fen": "kr6/3Q4/K7/8/8/8/8/8 w - - 0 1",
+    "solution": [
+      "d7a7"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 102,
+    "name": "F1 Evaluate - Game 1",
+    "difficulty": "Level 1",
+    "fen": "8/3pkP2/2n1p3/2p5/8/3K4/7P/5R2 w - - 0 1",
+    "solution": [
+      "f7f8q"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 103,
+    "name": "F1 Evaluate - Game 2",
+    "difficulty": "Level 1",
+    "fen": "k7/2r5/K2Q4/8/8/8/8/8 w - - 0 1",
+    "solution": [
+      "d6d8",
+      "d8c8"
+    ],
+    "opponentMoves": [
+      "c7c8"
+    ]
+  },
+  {
+    "id": 104,
+    "name": "F1 Evaluate - Game 3",
+    "difficulty": "Level 1",
+    "fen": "8/pp3pkp/2p1q1p1/1r3n2/3N4/1P1Q3P/P4PP1/5RK1 w - - 0 1",
+    "solution": [
+      "d4e6"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 105,
+    "name": "F1 Evaluate - Game 4",
+    "difficulty": "Level 1",
+    "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
+    "solution": [
+      "g1f3"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 106,
+    "name": "F1 Evaluate - Game 5",
+    "difficulty": "Level 1",
+    "fen": "8/8/R6p/4pkp1/4N3/3P2PP/1r6/3K4 w - - 0 1",
+    "solution": [
+      "a6f6"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 107,
+    "name": "F1 Evaluate - Game 6",
+    "difficulty": "Level 1",
+    "fen": "2R5/7R/8/8/1k6/8/7K/8 w - - 0 1",
+    "solution": [
+      "h7b7",
+      "c8a8"
+    ],
+    "opponentMoves": [
+      "b4a5"
+    ]
+  },
+  {
+    "id": 108,
+    "name": "F1 Evaluate - Game 7",
+    "difficulty": "Level 1",
+    "fen": "6k1/4Q3/8/4K3/8/8/8/8 w - - 0 1",
+    "solution": [
+      "e5f6",
+      "e7g7"
+    ],
+    "opponentMoves": [
+      "g8h8"
+    ]
+  },
+  {
+    "id": 109,
+    "name": "F1 Evaluate - Game 8",
+    "difficulty": "Level 1",
+    "fen": "8/1p6/4k3/4n3/8/8/3P4/3KR3 w - - 0 1",
+    "solution": [
+      "d2d4"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 110,
+    "name": "F1 Evaluate - Game 9",
+    "difficulty": "Level 1",
+    "fen": "2r5/p1pk2bp/1p4p1/6B1/7P/2P2B2/PP3KP1/8 w - - 0 1",
+    "solution": [
+      "f3g4",
+      "g4c8"
+    ],
+    "opponentMoves": [
+      "d7e8"
+    ]
+  },
+  {
+    "id": 111,
+    "name": "F1 Evaluate - Game 10",
+    "difficulty": "Level 1",
+    "fen": "5q1k/pp2N2p/3p2p1/2n1b3/8/4B2Q/PPP4P/7K w - - 0 1",
+    "solution": [
+      "e7g6",
+      "g6f8"
+    ],
+    "opponentMoves": [
+      "h8g8"
+    ]
+  },
+  {
+    "id": 112,
+    "name": "F1 Evaluate - Game 11",
+    "difficulty": "Level 1",
+    "fen": "rnb1k2r/1pp2ppp/p1q2n2/2b5/8/2N2N2/PPP1BPPP/R1BQR1K1 w kq - 0 1",
+    "solution": [
+      "e2b5"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 113,
+    "name": "F1 Evaluate - Game 12",
+    "difficulty": "Level 1",
+    "fen": "8/1kr4b/pp5p/6p1/8/3B4/PP4PP/2R3K1 w - - 0 1",
+    "solution": [
+      "c1c7",
+      "d3h7"
+    ],
+    "opponentMoves": [
+      "b7c7"
+    ]
+  },
+  {
+    "id": 114,
+    "name": "F1 Evaluate - Game 13",
+    "difficulty": "Level 1",
+    "fen": "8/p5pk/1b4p1/1Q6/2P1q3/6Pp/5P1P/5RK1 w - - 0 1",
+    "solution": [
+      "b5d5"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 115,
+    "name": "F1 Evaluate - Game 14",
+    "difficulty": "Level 1",
+    "fen": "8/2p5/1p5p/k6P/P5P1/1K6/8/8 w - - 0 1",
+    "solution": [
+      "g4g5",
+      "h5h6",
+      "h6h7",
+      "h7h8q"
+    ],
+    "opponentMoves": [
+      "h6g5",
+      "g5g4",
+      "g4g3"
+    ]
+  },
+  {
+    "id": 116,
+    "name": "F1 Evaluate - Game 15",
+    "difficulty": "Level 1",
+    "fen": "rnb1kbnr/pppp1p1p/8/8/2B1Ppp1/2N2NqP/PPPP2P1/R1BQ1K1R w kq - 0 1",
+    "solution": [
+      "c3e2",
+      "e2g3"
+    ],
+    "opponentMoves": [
+      "g4f3"
+    ]
+  },
+  {
+    "id": 117,
+    "name": "F1 Evaluate - Game 16",
+    "difficulty": "Level 1",
+    "fen": "6k1/2p3p1/p7/1p6/4Q1R1/1Pq4P/P5K1/3r4 w - - 0 1",
+    "solution": [
+      "e4e8",
+      "g4h4"
+    ],
+    "opponentMoves": [
+      "g8h7"
+    ]
+  },
+  {
+    "id": 118,
+    "name": "F1 Evaluate - Game 17",
+    "difficulty": "Level 1",
+    "fen": "1r2r1k1/2p2pp1/1pbp4/3n1Q1p/3P1p1q/p1P2P2/P1B3PN/3RR1K1 w - - 0 1",
+    "solution": [
+      "f5h7",
+      "h7h8"
+    ],
+    "opponentMoves": [
+      "g8f8"
+    ]
+  },
+  {
+    "id": 119,
+    "name": "F1 Evaluate - Game 18",
+    "difficulty": "Level 1",
+    "fen": "5k2/8/4K3/R7/8/8/8/8 w - - 0 1",
+    "solution": [
+      "a5g5",
+      "g5g8"
+    ],
+    "opponentMoves": [
+      "f8e8"
+    ]
+  },
+  {
+    "id": 120,
+    "name": "F1 Evaluate - Game 19",
+    "difficulty": "Level 1",
+    "fen": "r1b2krQ/1pq1bp2/p3pp2/n3P3/2p2P2/7R/1PP4P/R6K w - - 0 1",
+    "solution": [
+      "h8g8",
+      "a1g1",
+      "h3h8"
+    ],
+    "opponentMoves": [
+      "f8g8",
+      "g8f8"
+    ]
+  },
+  {
+    "id": 121,
+    "name": "F1 Evaluate - Game 20",
+    "difficulty": "Level 1",
+    "fen": "8/p1n2Rpk/2Pq3p/8/2QrP3/PB5P/6P1/6K1 w - - 0 1",
+    "solution": [
+      "f7g7",
+      "c4f7",
+      "f7g8"
+    ],
+    "opponentMoves": [
+      "h7g7",
+      "g7h8"
+    ]
+  }
+]

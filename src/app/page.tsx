@@ -5,9 +5,12 @@ import WelcomeScreen from "@/components/WelcomeScreen";
 import QuestionScreen, { Answers } from "@/components/QuestionScreen";
 import PuzzleBoard from "@/components/PuzzleBoard";
 import ResultScreen from "@/components/ResultScreen";
+import LevelDisplay from "@/components/LevelDisplay";
+import CompletionScreen from "@/components/CompletionScreen";
 import { puzzles } from "@/data/puzzles";
+import { level1Puzzles, level2Puzzles, level3Puzzles } from "@/data/levelPuzzles";
 
-type AppState = "welcome" | "questions" | "puzzles" | "results";
+type AppState = "welcome" | "questions" | "puzzles" | "results" | "levelDisplay" | "levelPuzzles" | "completion";
 
 interface PuzzleResult {
   puzzleId: number;
@@ -21,6 +24,9 @@ export default function Home() {
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [puzzleResults, setPuzzleResults] = useState<PuzzleResult[]>([]);
   const [wrongCount, setWrongCount] = useState(0);
+  const [assignedLevel, setAssignedLevel] = useState(0);
+  const [levelPuzzleResults, setLevelPuzzleResults] = useState<PuzzleResult[]>([]);
+  const [levelWrongCount, setLevelWrongCount] = useState(0);
 
   const handleStart = () => {
     setState("questions");
@@ -52,7 +58,8 @@ export default function Home() {
       // Stop after second wrong puzzle
       if (newWrongCount >= 2) {
         const level = calculateLevel(updatedResults);
-        setState("results");
+        setAssignedLevel(level);
+        setState("levelDisplay");
         return;
       }
     }
@@ -63,7 +70,8 @@ export default function Home() {
     } else {
       // All puzzles completed
       const level = calculateLevel(updatedResults);
-      setState("results");
+      setAssignedLevel(level);
+      setState("levelDisplay");
     }
   };
 
@@ -112,9 +120,50 @@ export default function Home() {
     setCurrentPuzzleIndex(0);
     setPuzzleResults([]);
     setWrongCount(0);
+    setAssignedLevel(0);
+    setLevelPuzzleResults([]);
+    setLevelWrongCount(0);
   };
 
-  const assignedLevel = answers ? calculateLevel(puzzleResults) : 1;
+  const handleLevelDisplayContinue = () => {
+    setState("levelPuzzles");
+    setCurrentPuzzleIndex(0);
+    setLevelPuzzleResults([]);
+    setLevelWrongCount(0);
+  };
+
+  const getLevelPuzzles = () => {
+    switch (assignedLevel) {
+      case 1:
+        return level1Puzzles;
+      case 2:
+        return level2Puzzles;
+      case 3:
+        return level3Puzzles;
+      default:
+        return level1Puzzles;
+    }
+  };
+
+  const handleLevelPuzzleSolve = (solved: boolean) => {
+    const levelPuzzles = getLevelPuzzles();
+    const currentPuzzle = levelPuzzles[currentPuzzleIndex];
+    const newResult: PuzzleResult = {
+      puzzleId: currentPuzzle.id,
+      puzzleName: currentPuzzle.name,
+      solved,
+    };
+
+    const updatedResults = [...levelPuzzleResults, newResult];
+    setLevelPuzzleResults(updatedResults);
+
+    // Continue through all level puzzles; only go to completion after the last one
+    if (currentPuzzleIndex < levelPuzzles.length - 1) {
+      setCurrentPuzzleIndex(currentPuzzleIndex + 1);
+    } else {
+      setState("completion");
+    }
+  };
 
   return (
     <main>
@@ -129,6 +178,20 @@ export default function Home() {
           totalPuzzles={puzzles.length}
           onSolve={handlePuzzleSolve}
         />
+      )}
+      {state === "levelDisplay" && (
+        <LevelDisplay level={assignedLevel} onContinue={handleLevelDisplayContinue} />
+      )}
+      {state === "levelPuzzles" && (
+        <PuzzleBoard
+          puzzle={getLevelPuzzles()[currentPuzzleIndex]}
+          puzzleNumber={currentPuzzleIndex + 1}
+          totalPuzzles={getLevelPuzzles().length}
+          onSolve={handleLevelPuzzleSolve}
+        />
+      )}
+      {state === "completion" && (
+        <CompletionScreen level={assignedLevel} onRestart={handleRestart} />
       )}
       {state === "results" && answers && (
         <ResultScreen

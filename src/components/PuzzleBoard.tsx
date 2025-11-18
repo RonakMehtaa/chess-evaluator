@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Chessboard } from "react-chessboard";
-import type { PieceDropHandlerArgs } from "react-chessboard";
+import type { PieceDropHandlerArgs, SquareHandlerArgs } from "react-chessboard";
 import { Chess } from "chess.js";
+import type { Square } from "chess.js";
 import { Puzzle } from "@/data/puzzles";
 
 interface PuzzleBoardProps {
@@ -38,6 +39,8 @@ export default function PuzzleBoard({
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [isOpponentMoving, setIsOpponentMoving] = useState(false);
+  const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
+  const [legalMoves, setLegalMoves] = useState<string[]>([]);
 
   useEffect(() => {
     // Reset game when puzzle changes
@@ -52,6 +55,8 @@ export default function PuzzleBoard({
       setFeedback(null);
       setIsComplete(false);
       setIsOpponentMoving(false);
+      setSelectedSquare(null);
+      setLegalMoves([]);
     } catch (e) {
       console.error("Failed to create new game with FEN:", puzzle.fen, e);
       const fallback = new Chess();
@@ -59,6 +64,8 @@ export default function PuzzleBoard({
       console.log("Using fallback, FEN:", fallbackFen);
       setGame(fallback);
       setBoardPosition(fallbackFen);
+      setSelectedSquare(null);
+      setLegalMoves([]);
     }
   }, [puzzle.fen, puzzle.id]);
 
@@ -167,6 +174,55 @@ export default function PuzzleBoard({
     return makeMove(sourceSquare, targetSquare);
   };
 
+  /**
+   * Handle square click for click-to-move functionality
+   */
+  const handleSquareClick = ({ square }: SquareHandlerArgs) => {
+    if (isComplete || isOpponentMoving) return;
+
+    const squareTyped = square as Square;
+
+    // If no square is selected, select the clicked square if it has a piece
+    if (!selectedSquare) {
+      const piece = game.get(squareTyped);
+      if (piece) {
+        setSelectedSquare(square);
+        // Get legal moves for this piece
+        const moves = game.moves({ square: squareTyped, verbose: true });
+        setLegalMoves(moves.map((m) => m.to));
+      }
+      return;
+    }
+
+    // If the same square is clicked again, deselect it
+    if (selectedSquare === square) {
+      setSelectedSquare(null);
+      setLegalMoves([]);
+      return;
+    }
+
+    // If a different square is clicked, try to move the piece
+    if (legalMoves.includes(square)) {
+      const success = makeMove(selectedSquare, square);
+      if (success) {
+        setSelectedSquare(null);
+        setLegalMoves([]);
+      }
+    } else {
+      // If the clicked square has a piece, select it instead
+      const piece = game.get(squareTyped);
+      if (piece) {
+        setSelectedSquare(square);
+        const moves = game.moves({ square: squareTyped, verbose: true });
+        setLegalMoves(moves.map((m) => m.to));
+      } else {
+        // Invalid move, deselect
+        setSelectedSquare(null);
+        setLegalMoves([]);
+      }
+    }
+  };
+
   // Use boardPosition state for rendering
   console.log("Rendering with boardPosition:", boardPosition, "Expected:", puzzle.fen, "Game FEN:", game.fen());
 
@@ -195,13 +251,6 @@ export default function PuzzleBoard({
             <p className="text-gray-600 dark:text-gray-400">
               Find the best move sequence to checkmate your opponent
             </p>
-            {/* Debug: Show current FEN and expected FEN */}
-            <div className="text-xs text-gray-400 mt-2 space-y-1">
-              <p>Expected FEN: {puzzle.fen}</p>
-              <p>Board Position: {boardPosition}</p>
-              <p>Game FEN: {game.fen()}</p>
-              <p>Match: {boardPosition === puzzle.fen ? "✓" : "✗"}</p>
-            </div>
           </div>
 
           {/* Chessboard */}
@@ -218,11 +267,26 @@ export default function PuzzleBoard({
               <div style={{ width: Math.min(600, typeof window !== "undefined" ? window.innerWidth - 100 : 600) }}>
                 <Chessboard
                   key={`board-${puzzle.id}-${boardPosition}`}
-                options={{
-                  position: boardPosition,
-                  onPieceDrop: onDrop,
-                  allowDragging: !isComplete && !isOpponentMoving,
-                }}
+                  options={{
+                    position: boardPosition,
+                    onPieceDrop: onDrop,
+                    onSquareClick: handleSquareClick,
+                    allowDragging: !isComplete && !isOpponentMoving,
+                    squareStyles: {
+                      [selectedSquare || ""]: {
+                        backgroundColor: selectedSquare ? "rgba(186, 202, 68, 0.8)" : undefined,
+                      },
+                      ...legalMoves.reduce(
+                        (acc, square) => ({
+                          ...acc,
+                          [square]: {
+                            backgroundColor: "rgba(186, 202, 68, 0.4)",
+                          },
+                        }),
+                        {} as Record<string, object>
+                      ),
+                    },
+                  }}
                 />
               </div>
             </div>
