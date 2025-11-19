@@ -6,6 +6,21 @@ import type { PieceDropHandlerArgs, SquareHandlerArgs } from "react-chessboard";
 import { Chess } from "chess.js";
 import type { Square } from "chess.js";
 import { Puzzle } from "@/data/puzzles";
+// Piece images (SVGs in public/pieces/)
+const pieceImgs = {
+  w: {
+    q: "/pieces/wQ.svg",
+    r: "/pieces/wR.svg",
+    b: "/pieces/wB.svg",
+    n: "/pieces/wN.svg",
+  },
+  b: {
+    q: "/pieces/bQ.svg",
+    r: "/pieces/bR.svg",
+    b: "/pieces/bB.svg",
+    n: "/pieces/bN.svg",
+  },
+};
 
 interface PuzzleBoardProps {
   puzzle: Puzzle;
@@ -41,6 +56,8 @@ export default function PuzzleBoard({
   const [isOpponentMoving, setIsOpponentMoving] = useState(false);
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
+  // Promotion overlay state
+  const [promotionDetails, setPromotionDetails] = useState<null | { from: string; to: string; color: 'w' | 'b' }>(null);
 
   useEffect(() => {
     // Reset game when puzzle changes
@@ -107,35 +124,43 @@ export default function PuzzleBoard({
     }, 800); // 800ms delay for visual feedback
   };
 
-  const makeMove = (from: string, to: string) => {
+  const makeMove = (from: string, to: string, promotion?: string) => {
     if (isComplete || isOpponentMoving) return false;
 
-    // First, try to make the move legally
+    // Check for pawn promotion
+    const piece = game.get(from as Square);
+    if (
+      piece?.type === "p" &&
+      ((piece.color === "w" && to[1] === "8") || (piece.color === "b" && to[1] === "1")) &&
+      !promotion
+    ) {
+      setPromotionDetails({ from, to, color: piece.color });
+      return false;
+    }
+
     try {
       const gameCopy = new Chess(game.fen());
       const move = gameCopy.move({
         from: from.toLowerCase(),
         to: to.toLowerCase(),
-        promotion: "q",
+        promotion: promotion || "q",
       });
 
       if (move) {
         // Move is legal, now check if it matches solution
-        const moveUCI = `${from}${to}`.toLowerCase();
+        const moveUCI = promotion ? `${from}${to}${promotion}`.toLowerCase() : `${from}${to}`.toLowerCase();
         const expectedMove = puzzle.solution[moveHistory.length]?.toLowerCase();
-        
-        console.log("Move made:", moveUCI, "Expected:", expectedMove, "Match:", moveUCI === expectedMove);
-        
-        // Check if move matches solution BEFORE updating state
-        if (expectedMove && moveUCI === expectedMove) {
-          // Correct move! Update game state
+
+        // For promotion, expectedMove may include promotion piece
+        const match = expectedMove && (moveUCI === expectedMove || `${from}${to}` === expectedMove);
+
+        if (match) {
           const newFen = gameCopy.fen();
           setGame(gameCopy);
-          setBoardPosition(newFen); // Update board position explicitly
+          setBoardPosition(newFen);
           const newMoveHistory = [...moveHistory, moveUCI];
           setMoveHistory(newMoveHistory);
 
-          // Check if puzzle is complete
           if (newMoveHistory.length === puzzle.solution.length) {
             setFeedback("correct");
             setIsComplete(true);
@@ -143,15 +168,11 @@ export default function PuzzleBoard({
               onSolve(true);
             }, 1500);
           } else {
-            // More moves needed - play opponent's response
             setFeedback("correct");
-            // Play opponent move after student's correct move
             playOpponentMove(newFen, moveHistory.length);
           }
           return true;
         } else {
-          // Wrong move - doesn't match solution
-          // Don't update game state, just show feedback
           setFeedback("incorrect");
           setIsComplete(true);
           setTimeout(() => {
@@ -161,16 +182,16 @@ export default function PuzzleBoard({
         }
       }
     } catch (e) {
-      // Illegal move
       console.error("Illegal move:", e);
       return false;
     }
-
     return false;
   };
 
   const onDrop = ({ sourceSquare, targetSquare }: PieceDropHandlerArgs) => {
     if (!targetSquare) return false;
+    // If promotion overlay is active, block moves
+    if (promotionDetails) return false;
     return makeMove(sourceSquare, targetSquare);
   };
 
@@ -179,29 +200,26 @@ export default function PuzzleBoard({
    */
   const handleSquareClick = ({ square }: SquareHandlerArgs) => {
     if (isComplete || isOpponentMoving) return;
+    if (promotionDetails) return;
 
     const squareTyped = square as Square;
 
-    // If no square is selected, select the clicked square if it has a piece
     if (!selectedSquare) {
       const piece = game.get(squareTyped);
       if (piece) {
         setSelectedSquare(square);
-        // Get legal moves for this piece
         const moves = game.moves({ square: squareTyped, verbose: true });
         setLegalMoves(moves.map((m) => m.to));
       }
       return;
     }
 
-    // If the same square is clicked again, deselect it
     if (selectedSquare === square) {
       setSelectedSquare(null);
       setLegalMoves([]);
       return;
     }
 
-    // If a different square is clicked, try to move the piece
     if (legalMoves.includes(square)) {
       const success = makeMove(selectedSquare, square);
       if (success) {
@@ -209,14 +227,12 @@ export default function PuzzleBoard({
         setLegalMoves([]);
       }
     } else {
-      // If the clicked square has a piece, select it instead
       const piece = game.get(squareTyped);
       if (piece) {
         setSelectedSquare(square);
         const moves = game.moves({ square: squareTyped, verbose: true });
         setLegalMoves(moves.map((m) => m.to));
       } else {
-        // Invalid move, deselect
         setSelectedSquare(null);
         setLegalMoves([]);
       }
@@ -224,7 +240,25 @@ export default function PuzzleBoard({
   };
 
   // Use boardPosition state for rendering
-  console.log("Rendering with boardPosition:", boardPosition, "Expected:", puzzle.fen, "Game FEN:", game.fen());
+  // Helper to get overlay position near promotion square
+  const getPromotionOverlayStyle = () => {
+    if (!promotionDetails) return { top: "50%", left: "50%" };
+    // Board is always 8x8, 600px max width
+    const boardPx = Math.min(600, typeof window !== "undefined" ? window.innerWidth - 100 : 600);
+    const squarePx = boardPx / 8;
+    const file = promotionDetails.to[0].charCodeAt(0) - "a".charCodeAt(0);
+    const rank = 8 - parseInt(promotionDetails.to[1]);
+    const left = file * squarePx + squarePx / 2;
+    const top = rank * squarePx + squarePx / 2;
+    return { top: `${top}px`, left: `${left}px`, width: "auto" };
+  };
+
+  // Promotion piece selection handler
+  const handlePromotionSelect = (piece: "q" | "r" | "b" | "n") => {
+    if (!promotionDetails) return;
+    makeMove(promotionDetails.from, promotionDetails.to, piece);
+    setPromotionDetails(null);
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12">
@@ -254,7 +288,7 @@ export default function PuzzleBoard({
           </div>
 
           {/* Chessboard */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6" style={{ position: "relative" }}>
             <div
               className={`transition-all duration-300 ${
                 feedback === "correct"
@@ -264,7 +298,7 @@ export default function PuzzleBoard({
                   : ""
               }`}
             >
-              <div style={{ width: Math.min(600, typeof window !== "undefined" ? window.innerWidth - 100 : 600) }}>
+              <div style={{ width: Math.min(600, typeof window !== "undefined" ? window.innerWidth - 100 : 600), position: "relative" }}>
                 <Chessboard
                   key={`board-${puzzle.id}-${boardPosition}`}
                   options={{
@@ -288,6 +322,27 @@ export default function PuzzleBoard({
                     },
                   }}
                 />
+                {/* Promotion overlay */}
+                {promotionDetails && (
+                  <div
+                    className="absolute z-30 flex flex-row gap-2 p-2 bg-white dark:bg-gray-900 rounded shadow-lg border border-gray-300 dark:border-gray-700"
+                    style={{ ...getPromotionOverlayStyle(), transform: "translate(-50%, -50%)" }}
+                  >
+                    {(["q", "r", "b", "n"] as const).map((piece) => (
+                      <button
+                        key={piece}
+                        onClick={() => handlePromotionSelect(piece)}
+                        className="focus:outline-none hover:ring-2 hover:ring-indigo-400 rounded"
+                      >
+                        <img
+                          src={pieceImgs[promotionDetails.color as 'w' | 'b'][piece as 'q' | 'r' | 'b' | 'n']}
+                          alt={piece}
+                          className="w-12 h-12"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

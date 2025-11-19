@@ -1,0 +1,158 @@
+﻿[Event "?"]
+[Site "?"]
+[Date "2024.06.17"]
+[Round "?"]
+[White "Puzzle 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "r3k2r/pp3pp1/7p/2p5/2P1q3/6P1/PP3P1P/2RQ1RK1 w kq - 0 1"]
+[PlyCount "1"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.06.17"]
+
+{White to play and Pin.} 1. Re1 *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.06.17"]
+[Round "?"]
+[White "Puzzle 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "4r1k1/rb1n1ppp/2p5/ppq1p3/8/P2P4/BPP2PPP/R1BQ1RK1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.06.17"]
+
+{[%evp 0,3,451,451,451,449]} {White to play and win material using Skewer.} 1. Be3 Qe7 2. Bxa7 *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.06.13"]
+[Round "?"]
+[White "Puzzle 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "8/4qppk/p1b1p2p/1p2P3/1P6/P3B2P/4QPP1/6K1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.06.13"]
+
+{White to play and win.} 1. Qc2+ Kg8 2. Qxc6 *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.07.24"]
+[Round "?"]
+[White "Puzzle 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "r4rk1/pp3ppp/2nq1n2/2p5/8/3B1N2/P1P2PPP/R2QR1K1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.07.24"]
+
+{[%evp 3,3,493] White to play and win.} 1. Bxh7+ Kxh7 2. Qxd6 *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.06.12"]
+[Round "?"]
+[White "Puzzle 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "r4rk1/ppp2ppp/1n1p4/1B1P4/8/2N2qPb/PPPQ1P1P/3RR1K1 w - - 0 1"]
+[PlyCount "1"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.06.12"]
+
+{White to play and defend checkmate.} 1. Bf1 *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.06.12"]
+[Round "?"]
+[White "Puzzle 6"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "rnb1kb1r/ppp2ppp/2qp4/3N4/4P1n1/6Q1/PPP2PPP/R1B1KBNR w KQkq - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.12.08"]
+
+{White to play and win material.} 1. Bb5 Qxb5 2. Nxc7+ Kd7 3. Nxb5 *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.12.08"]
+[Round "?"]
+[White "Puzzle 7"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "r4r1k/pp1R4/5p1p/4pB1Q/5q2/7P/PP3PP1/6K1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.12.08"]
+[Source "Chessable.com"]
+
+{White to play and Mate in 2 moves.} 1. Rh7+ Kg8 2. Qg6# *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.06.19"]
+[Round "?"]
+[White "Puzzle 8"]
+[Black "?"]
+[Result "*"]
+[Annotator "CircleChess"]
+[SetUp "1"]
+[FEN "8/1kr4b/pp5p/6p1/8/3B4/PP4PP/2R3K1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.09.07"]
+
+{[%evp 0,3,312,322,381,414]} {White to play. Find the best move.} 1. Rxc7+ Kxc7 2. Bxh7 *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.12.17"]
+[Round "?"]
+[White "Puzzle 9"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[FEN "8/2p5/1p5p/k6P/P5P1/1K6/8/8 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2025.04.11"]
+
+{[%evp 0,7,940,961,972,992,992,1002,29991,29992]} {White to play. Find the best move.} 1. g5 hxg5 2. h6 g4 3. h7 g3 4. h8=Q *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.12.29"]
+[Round "?"]
+[White "Puzzle 10"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[FEN "rnb1kbnr/pppp1p1p/8/8/2B1Ppp1/2N2NqP/PPPP2P1/R1BQ1K1R w kq - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.12.29"]
+
+{[%evp 0,3,484,464,646,689]} {White to play. Find the best move.} 1. Ne2 gxf3 2. Nxg3 *
+

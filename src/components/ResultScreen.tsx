@@ -47,6 +47,16 @@ export default function ResultScreen({
             </h2>
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 space-y-4">
               <div>
+                <span className="font-semibold text-gray-700 dark:text-gray-300">Name:</span>{" "}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {answers.firstName || ""} {answers.lastName || ""}
+                </span>
+              </div>
+              <div>
+                <span className="font-semibold text-gray-700 dark:text-gray-300">Phone:</span>{" "}
+                <span className="text-gray-600 dark:text-gray-400">{answers.phone || "-"}</span>
+              </div>
+              <div>
                 <span className="font-semibold text-gray-700 dark:text-gray-300">
                   Years playing chess:
                 </span>{" "}

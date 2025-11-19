@@ -6,6 +6,9 @@ export interface Answers {
   yearsPlaying: number;
   knowsPieceMovement: boolean | null;
   playedTournaments: boolean | null;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
 }
 
 interface QuestionScreenProps {
@@ -13,6 +16,9 @@ interface QuestionScreenProps {
 }
 
 export default function QuestionScreen({ onComplete }: QuestionScreenProps) {
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [yearsPlaying, setYearsPlaying] = useState<number>(0);
   const [knowsPieceMovement, setKnowsPieceMovement] = useState<boolean | null>(null);
   const [playedTournaments, setPlayedTournaments] = useState<boolean | null>(null);
@@ -23,6 +29,9 @@ export default function QuestionScreen({ onComplete }: QuestionScreenProps) {
       return;
     }
     onComplete({
+      firstName,
+      lastName,
+      phone,
       yearsPlaying,
       knowsPieceMovement,
       playedTournaments,
@@ -38,6 +47,46 @@ export default function QuestionScreen({ onComplete }: QuestionScreenProps) {
           </h2>
 
           <div className="space-y-6">
+            {/* Personal fields merged into questions page */}
+            <div>
+              <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                First Name
+              </label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                placeholder="First name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Last Name
+              </label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                placeholder="Last name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                placeholder="Phone number"
+              />
+            </div>
+
             {/* Question 1 */}
             <div>
               <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">

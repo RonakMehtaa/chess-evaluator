@@ -9,6 +9,7 @@ import LevelDisplay from "@/components/LevelDisplay";
 import CompletionScreen from "@/components/CompletionScreen";
 import { puzzles } from "@/data/puzzles";
 import { level1Puzzles, level2Puzzles, level3Puzzles } from "@/data/levelPuzzles";
+import { saveUser, savePuzzleResult } from '../supabaseClient';
 
 type AppState = "welcome" | "questions" | "puzzles" | "results" | "levelDisplay" | "levelPuzzles" | "completion";
 
@@ -21,6 +22,7 @@ interface PuzzleResult {
 export default function Home() {
   const [state, setState] = useState<AppState>("welcome");
   const [answers, setAnswers] = useState<Answers | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [puzzleResults, setPuzzleResults] = useState<PuzzleResult[]>([]);
   const [wrongCount, setWrongCount] = useState(0);
@@ -32,15 +34,30 @@ export default function Home() {
     setState("questions");
   };
 
-  const handleQuestionsComplete = (userAnswers: Answers) => {
+  const handleQuestionsComplete = async (userAnswers: Answers) => {
     setAnswers(userAnswers);
+    const name = `${userAnswers.firstName ?? ''} ${userAnswers.lastName ?? ''}`.trim();
+    const email = userAnswers.phone ?? '';
+    // Save all user info to Supabase
+    const userData = await saveUser(
+      name,
+      email,
+      userAnswers.yearsPlaying,
+      userAnswers.knowsPieceMovement ?? false,
+      userAnswers.playedTournaments ?? false,
+      userAnswers.phone
+    );
+    // Store userId for puzzle results
+    if (userData && userData.id) {
+      setUserId(userData.id);
+    }
     setState("puzzles");
     setCurrentPuzzleIndex(0);
     setPuzzleResults([]);
     setWrongCount(0);
   };
 
-  const handlePuzzleSolve = (solved: boolean) => {
+  const handlePuzzleSolve = async (solved: boolean) => {
     const currentPuzzle = puzzles[currentPuzzleIndex];
     const newResult: PuzzleResult = {
       puzzleId: currentPuzzle.id,
@@ -71,7 +88,13 @@ export default function Home() {
       // All puzzles completed
       const level = calculateLevel(updatedResults);
       setAssignedLevel(level);
-      setState("levelDisplay");
+      // Save all initial evaluation puzzle results to DB
+      if (userId) {
+        for (const result of updatedResults) {
+          await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
+        }
+      }
+      setState("results");
     }
   };
 
@@ -145,7 +168,7 @@ export default function Home() {
     }
   };
 
-  const handleLevelPuzzleSolve = (solved: boolean) => {
+  const handleLevelPuzzleSolve = async (solved: boolean) => {
     const levelPuzzles = getLevelPuzzles();
     const currentPuzzle = levelPuzzles[currentPuzzleIndex];
     const newResult: PuzzleResult = {
@@ -157,13 +180,20 @@ export default function Home() {
     const updatedResults = [...levelPuzzleResults, newResult];
     setLevelPuzzleResults(updatedResults);
 
-    // Continue through all level puzzles; only go to completion after the last one
+    // Save puzzle result for this user
+    if (userId) {
+      await savePuzzleResult(userId, assignedLevel, currentPuzzle.id, solved);
+    }
+
+    // Continue through all level puzzles; redirect to results after the last one
     if (currentPuzzleIndex < levelPuzzles.length - 1) {
       setCurrentPuzzleIndex(currentPuzzleIndex + 1);
     } else {
-      setState("completion");
+      setState("results");
     }
   };
+
+
 
   return (
     <main>
@@ -172,23 +202,47 @@ export default function Home() {
         <QuestionScreen onComplete={handleQuestionsComplete} />
       )}
       {state === "puzzles" && (
-        <PuzzleBoard
-          puzzle={puzzles[currentPuzzleIndex]}
-          puzzleNumber={currentPuzzleIndex + 1}
-          totalPuzzles={puzzles.length}
-          onSolve={handlePuzzleSolve}
-        />
+        <div className="flex flex-col items-center">
+          <PuzzleBoard
+            puzzle={puzzles[currentPuzzleIndex]}
+            puzzleNumber={currentPuzzleIndex + 1}
+            totalPuzzles={puzzles.length}
+            onSolve={handlePuzzleSolve}
+          />
+          <button
+            className="mt-6 px-4 py-2 rounded bg-indigo-600 text-white shadow hover:bg-indigo-700 transition"
+            onClick={async () => {
+              // Save all puzzleResults to DB for this user
+              if (userId) {
+                for (const result of puzzleResults) {
+                  await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
+                }
+              }
+              setState("results");
+            }}
+          >
+            End Evaluation
+          </button>
+        </div>
       )}
       {state === "levelDisplay" && (
         <LevelDisplay level={assignedLevel} onContinue={handleLevelDisplayContinue} />
       )}
       {state === "levelPuzzles" && (
-        <PuzzleBoard
-          puzzle={getLevelPuzzles()[currentPuzzleIndex]}
-          puzzleNumber={currentPuzzleIndex + 1}
-          totalPuzzles={getLevelPuzzles().length}
-          onSolve={handleLevelPuzzleSolve}
-        />
+        <div className="flex flex-col items-center">
+          <PuzzleBoard
+            puzzle={getLevelPuzzles()[currentPuzzleIndex]}
+            puzzleNumber={currentPuzzleIndex + 1}
+            totalPuzzles={getLevelPuzzles().length}
+            onSolve={handleLevelPuzzleSolve}
+          />
+          <button
+            className="mt-6 px-4 py-2 rounded bg-red-600 text-white shadow hover:bg-red-700 transition"
+            onClick={() => setState("results")}
+          >
+            End Evaluation
+          </button>
+        </div>
       )}
       {state === "completion" && (
         <CompletionScreen level={assignedLevel} onRestart={handleRestart} />

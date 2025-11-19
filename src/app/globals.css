@@ -5,12 +5,8 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Removed invalid @theme rule which caused build errors. If you need theme-scoped variables
+   use standard CSS custom properties or Tailwind's dark: variants instead. */
 
 @media (prefers-color-scheme: dark) {
   :root {

@@ -14,6 +14,7 @@
     "cleanup-tmp": "rm -r -Force ./.tmp_scripts 2>$null || true"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.83.0",
     "chess.js": "^1.4.0",
     "next": "16.0.3",
     "react": "19.2.0",

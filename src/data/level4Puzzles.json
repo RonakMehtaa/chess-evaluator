@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "name": "Puzzle 1",
+    "difficulty": "Level 4",
+    "fen": "4r1k1/2R1n1pp/1Q2Pp2/1N1pqpn1/1p3N2/8/rP4PP/5RK1 w - - 0 27",
+    "solution": ["c7e7", "b2e7", "b6d8", "e7e8", "d8e8"],
+    "opponentMoves": ["e7e7", "e8e8", "e8e8", "e8e8"]
+  },
+  {
+    "id": 2,
+    "name": "Puzzle 2",
+    "difficulty": "Level 4",
+    "fen": "r5k1/2Q1R1pp/4Pp2/1N1p1pn1/1p3N2/4q3/1r4PP/5R1K w - - 0 29",
+    "solution": ["g7g7", "h7h7", "f3g6", "f7f7", "c2f7"],
+    "opponentMoves": ["g8h8", "g8h8", "g8h8", "g8h8"]
+  },
+  {
+    "id": 3,
+    "name": "Puzzle 3",
+    "difficulty": "Level 4",
+    "fen": "6k1/1b3ppp/5n2/1p6/n2qP3/5P2/2Q3PP/2R4K w - - 0 1",
+    "solution": ["c2c8", "b7c8", "c1c8", "d4d8", "c8d8", "e8e8", "e8e8"],
+    "opponentMoves": ["c8c8", "d8d8", "e8e8", "e8e8", "e8e8", "e8e8"]
+  },
+  {
+    "id": 4,
+    "name": "Puzzle 4",
+    "difficulty": "Level 4",
+    "fen": "3b2k1/pp4pp/4p3/2p5/2Q1P1Pq/2N2P2/PPP4P/2K5 b - - 0 1",
+    "solution": ["c4e1", "c3d1", "f8g5", "f3f4", "g5f4", "c1b1", "e1d1"],
+    "opponentMoves": ["d1d1", "g5g5", "f4f4", "b1b1", "d1d1", "d1d1"]
+  },
+  {
+    "id": 5,
+    "name": "Puzzle 5",
+    "difficulty": "Level 4",
+    "fen": "8/8/8/8/8/k7/2q5/KR6 w - - 0 1",
+    "solution": ["b1b3", "a3a4", "b3b4", "a4a5", "b4b5", "a5b5"],
+    "opponentMoves": ["a4a4", "a5a5", "b5b5", "b5b5", "b5b5"]
+  },
+  {
+    "id": 6,
+    "name": "Puzzle 6",
+    "difficulty": "Level 4",
+    "fen": "8/5bk1/8/p7/P1Q5/1KP5/8/8 b - - 0 1",
+    "solution": ["g7h8", "c4f7"],
+    "opponentMoves": ["h8h8"]
+  },
+  {
+    "id": 7,
+    "name": "Puzzle 7",
+    "difficulty": "Level 4",
+    "fen": "8/7p/8/6k1/3K4/8/8/8 b - - 0 1",
+    "solution": ["g5f4", "d4d3", "f4f3", "d3d2", "f3f2", "d2d1", "f2f1", "d1d1", "f1f1", "d1d1", "f1f1", "d1d1", "f1f1"],
+    "opponentMoves": ["d3d3", "d2d2", "d1d1", "d1d1", "d1d1", "d1d1", "d1d1", "d1d1", "d1d1", "d1d1", "d1d1", "d1d1"]
+  },
+  {
+    "id": 8,
+    "name": "Puzzle 8",
+    "difficulty": "Level 4",
+    "fen": "8/3k4/8/3K4/8/4P3/8/8 w - - 0 1",
+    "solution": ["e3e4", "d5e5", "e5d7", "d7e7", "e7d8", "d8e8", "e8d8", "d8e8", "e8d8", "d8e8", "e8d8"],
+    "opponentMoves": ["e5e5", "d7d7", "e7e7", "d8d8", "e8e8", "d8d8", "e8e8", "d8d8", "e8e8", "d8d8"]
+  },
+  {
+    "id": 9,
+    "name": "Puzzle 9",
+    "difficulty": "Level 4",
+    "fen": "r4rk1/pp2qppp/3b1n2/2pp1b2/2P1n3/1P2PN2/PB1NBPPP/R2QR1K1 b - - 0 1",
+    "solution": ["f6f2", "g1f2", "g4g4", "f2f1", "g4g4"],
+    "opponentMoves": ["f2f2", "f1f1", "g4g4", "f1f1"]
+  },
+  {
+    "id": 10,
+    "name": "Puzzle 10",
+    "difficulty": "Level 4",
+    "fen": "4k3/8/3K4/4P3/8/8/8/8 w - - 0 1",
+    "solution": ["d6e6", "e8f8", "e6d7", "f8f7", "d7e7", "f7f6", "e7e8", "f6f5", "e8e7"],
+    "opponentMoves": ["f8f8", "f7f7", "f6f6", "f5f5"]
+  }
+]

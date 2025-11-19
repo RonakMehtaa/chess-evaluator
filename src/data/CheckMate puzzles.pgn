@@ -1,0 +1,158 @@
+﻿[Event "?"]
+[Site "?"]
+[Date "2025.05.21"]
+[Round "?"]
+[White "Puzzle 1"]
+[Black "?"]
+[Result "1-0"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "kr6/3Q4/K7/8/8/8/8/8 w - - 0 1"]
+[PlyCount "1"]
+[EventDate "2025.??.??"]
+[SourceVersionDate "2024.11.22"]
+
+{[%evp 0,1,29999,-30000]} {White to play and Mate in 1.} 1. Qa7# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2025.05.21"]
+[Round "?"]
+[White "Puzzle 2"]
+[Black "?"]
+[Result "1-0"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "3R4/8/8/8/8/1K6/8/k7 w - - 0 1"]
+[PlyCount "1"]
+[EventDate "2025.??.??"]
+[SourceVersionDate "2024.11.22"]
+
+{[%evp 0,1,29999,-30000]} {White to play and Mate in 1 move.} 1. Rd1# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2025.05.21"]
+[Round "?"]
+[White "Puzzle 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "2R5/3B4/8/8/8/1K6/8/qk6 w - - 0 1"]
+[PlyCount "1"]
+[EventDate "2025.05.21"]
+[SourceVersionDate "2024.11.22"]
+
+{White to play and Mate in 1 move.} 1. Bf5# *
+
+[Event "?"]
+[Site "?"]
+[Date "2025.05.21"]
+[Round "?"]
+[White "Puzzle 4"]
+[Black "?"]
+[Result "1-0"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "2r4k/6R1/7K/4NpP1/5n2/8/8/8 w - - 0 1"]
+[PlyCount "1"]
+[EventDate "2025.??.??"]
+[SourceVersionDate "2024.11.22"]
+
+{White to play and Mate in 1 move.} 1. Nf7# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2025.05.24"]
+[Round "?"]
+[White "Puzzle 5"]
+[Black "?"]
+[Result "1-0"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "8/8/5B1k/Q7/8/8/4K3/8 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2025.??.??"]
+[SourceVersionDate "2024.11.23"]
+
+{White to play and Mate in two.} 1. Qg5+ Kh7 2. Qg7# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2025.05.24"]
+[Round "?"]
+[White "Puzzle 6"]
+[Black "?"]
+[Result "*"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "6nk/p4q1p/1p5P/r4PQ1/3P4/8/P5R1/6K1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2025.??.??"]
+[SourceVersionDate "2025.05.24"]
+
+{White to play and Mate in two.} 1. Qg7+ Qxg7 2. hxg7# *
+
+[Event "?"]
+[Site "?"]
+[Date "2024.12.24"]
+[Round "?"]
+[White "Puzzle 7"]
+[Black "?"]
+[Result "*"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "1r2r1k1/2p2pp1/1pbp4/3n1Q1p/3P1p1q/p1P2P2/P1B3PN/3RR1K1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.??.??"]
+[SourceVersionDate "2024.12.24"]
+
+{White to play and Mate in two.} 1. Qh7+ Kf8 2. Qh8# *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Puzzle 8"]
+[Black "?"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "r3r2k/pb2qpp1/1pn1p3/2pp2N1/8/P3P2P/1PP2PP1/R2Q1RK1 w - - 0 1"]
+[PlyCount "5"]
+[SourceVersionDate "2025.06.20"]
+
+{[%evp 0,5,29995,29996,29997,29998,29999,-30000]} {White to play & Mate in three.} 1. Qh5+ Kg8 2. Qh7+ Kf8 3. Qh8# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2025.11.19"]
+[Round "?"]
+[White "Puzzle 9"]
+[Black "?"]
+[Result "*"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "5rk1/1p1Q2p1/p5P1/q5Np/7N/8/1PP2P1P/4rb1K w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2025.??.??"]
+[SourceVersionDate "2025.11.19"]
+
+{White to play and Mate in 3.} 1. Qf7+ Rxf7 2. gxf7+ Kf8 3. Ng6# *
+
+[Event "?"]
+[Site "?"]
+[Date "2025.11.19"]
+[Round "?"]
+[White "Puzzle 10"]
+[Black "?"]
+[Result "*"]
+[Annotator "Hardik"]
+[SetUp "1"]
+[FEN "5rk1/4Qppp/r3p3/3pP3/n2B4/P2q2P1/5P1P/1RR3K1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2025.??.??"]
+[SourceVersionDate "2025.11.19"]
+
+{White to play and mate in} 1. Qxf8+ Kxf8 2. Rb8+ Ke7 3. Rc7# *
+
