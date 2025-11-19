@@ -283,7 +283,7 @@ export default function PuzzleBoard({
               {puzzle.name}
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              Find the best move sequence to checkmate your opponent
+              {puzzle.puzzle_desc || "Find the best move sequence to checkmate your opponent"}
             </p>
           </div>
 

@@ -2,7 +2,9 @@
   {
     "id": 1,
     "name": "Puzzle 1",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "50",
+    "puzzle_desc": "White to play and Mate in 1.",
     "fen": "kr6/3Q4/K7/8/8/8/8/8 w - - 0 1",
     "solution": [
       "d7a7"
@@ -10,9 +12,11 @@
     "opponentMoves": []
   },
   {
-    "id": 3,
+    "id": 2,
     "name": "Puzzle 2",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "50",
+    "puzzle_desc": "White to play and Mate in 1 move.",
     "fen": "3R4/8/8/8/8/1K6/8/k7 w - - 0 1",
     "solution": [
       "d8d1"
@@ -20,9 +24,11 @@
     "opponentMoves": []
   },
   {
-    "id": 5,
+    "id": 3,
     "name": "Puzzle 3",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "50",
+    "puzzle_desc": "White to play and Mate in 1 move.",
     "fen": "2R5/3B4/8/8/8/1K6/8/qk6 w - - 0 1",
     "solution": [
       "d7f5"
@@ -30,9 +36,11 @@
     "opponentMoves": []
   },
   {
-    "id": 7,
+    "id": 4,
     "name": "Puzzle 4",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "50",
+    "puzzle_desc": "White to play and Mate in 1 move.",
     "fen": "2r4k/6R1/7K/4NpP1/5n2/8/8/8 w - - 0 1",
     "solution": [
       "e5f7"
@@ -40,9 +48,11 @@
     "opponentMoves": []
   },
   {
-    "id": 9,
+    "id": 5,
     "name": "Puzzle 5",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "75",
+    "puzzle_desc": "White to play and Mate in two.",
     "fen": "8/8/5B1k/Q7/8/8/4K3/8 w - - 0 1",
     "solution": [
       "a5g5",
@@ -53,9 +63,11 @@
     ]
   },
   {
-    "id": 11,
+    "id": 6,
     "name": "Puzzle 6",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "75",
+    "puzzle_desc": "White to play and Mate in two.",
     "fen": "6nk/p4q1p/1p5P/r4PQ1/3P4/8/P5R1/6K1 w - - 0 1",
     "solution": [
       "g5g7",
@@ -66,9 +78,11 @@
     ]
   },
   {
-    "id": 13,
+    "id": 7,
     "name": "Puzzle 7",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "75",
+    "puzzle_desc": "White to play and Mate in two.",
     "fen": "1r2r1k1/2p2pp1/1pbp4/3n1Q1p/3P1p1q/p1P2P2/P1B3PN/3RR1K1 w - - 0 1",
     "solution": [
       "f5h7",
@@ -79,9 +93,11 @@
     ]
   },
   {
-    "id": 15,
+    "id": 8,
     "name": "Puzzle 8",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "100",
+    "puzzle_desc": "White to play & Mate in three.",
     "fen": "r3r2k/pb2qpp1/1pn1p3/2pp2N1/8/P3P2P/1PP2PP1/R2Q1RK1 w - - 0 1",
     "solution": [
       "d1h5",
@@ -94,9 +110,11 @@
     ]
   },
   {
-    "id": 17,
+    "id": 9,
     "name": "Puzzle 9",
-    "difficulty": "Initial Eval",
+    "difficulty": "Level 3",
+    "points": "100",
+    "puzzle_desc": "White to play and Mate in 3.",
     "fen": "5rk1/1p1Q2p1/p5P1/q5Np/7N/8/1PP2P1P/4rb1K w - - 0 1",
     "solution": [
       "d7f7",
@@ -109,18 +127,20 @@
     ]
   },
   {
-    "id": 19,
+    "id": 10,
     "name": "Puzzle 10",
-    "difficulty": "Initial Eval",
-    "fen": "5rk1/4Qppp/r3p3/3pP3/n2B4/P2q2P1/5P1P/1RR3K1 w - - 0 1",
+    "difficulty": "Level 3",
+    "points": "100",
+    "puzzle_desc": "White to play and mate in 3.",
+    "fen": "2b3k1/pp3ppp/1b1q4/3B2B1/1P6/P7/2P2PPP/4Q1K1 w - - 0 1",
     "solution": [
-      "e7f8",
-      "b1b8",
-      "c1c7"
+      "e1e8",
+      "d5f7",
+      "e8f8"
     ],
     "opponentMoves": [
-      "g8f8",
-      "f8e7"
+      "d6f8",
+      "g8h8"
     ]
   }
 ]

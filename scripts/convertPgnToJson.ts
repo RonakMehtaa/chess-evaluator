@@ -18,13 +18,10 @@
  *   - difficulty: (Optional) Difficulty description
  */
 
-import { convertAndSavePuzzles } from '../src/utils/pgnConverter';
-import type { PuzzleInputWithPgn } from '../src/utils/pgnConverter';
-
 // ============================================
 // LEVEL 1 PUZZLES - Beginner (Mate in 1)
 // ============================================
-const level1Puzzles: PuzzleInputWithPgn[] = [
+const level1Puzzles = [
   {
     id: 1,
     name: "Mate in 1 - Back Rank",
@@ -54,7 +51,7 @@ const level1Puzzles: PuzzleInputWithPgn[] = [
 // ============================================
 // LEVEL 2 PUZZLES - Intermediate (Mate in 2)
 // ============================================
-const level2Puzzles: PuzzleInputWithPgn[] = [
+const level2Puzzles = [
   {
     id: 101,
     name: "Mate in 2 - Queen and Rook",
@@ -76,7 +73,7 @@ const level2Puzzles: PuzzleInputWithPgn[] = [
 // ============================================
 // LEVEL 3 PUZZLES - Advanced (Mate in 3+)
 // ============================================
-const level3Puzzles: PuzzleInputWithPgn[] = [
+const level3Puzzles = [
   {
     id: 201,
     name: "Mate in 3 - Complex Combination",
@@ -94,29 +91,3 @@ const level3Puzzles: PuzzleInputWithPgn[] = [
     difficulty: "Hard",
   },
 ];
-
-// ============================================
-// MAIN EXECUTION
-// ============================================
-
-async function main() {
-  console.log('╔════════════════════════════════════════╗');
-  console.log('║   PGN to FEN Converter - Caissa Chess  ║');
-  console.log('╚════════════════════════════════════════╝');
-
-  // Convert Level 1
-  console.log('\n--- LEVEL 1 ---');
-  convertAndSavePuzzles(level1Puzzles, 1);
-
-  // Convert Level 2
-  console.log('\n--- LEVEL 2 ---');
-  convertAndSavePuzzles(level2Puzzles, 2);
-
-  // Convert Level 3
-  console.log('\n--- LEVEL 3 ---');
-  convertAndSavePuzzles(level3Puzzles, 3);
-
-  console.log('\n✨ Conversion complete! Check src/data/ for the generated JSON files.\n');
-}
-
-main().catch(console.error);

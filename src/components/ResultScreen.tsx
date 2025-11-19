@@ -3,22 +3,16 @@
 import { Answers } from "./QuestionScreen";
 import { Puzzle } from "@/data/puzzles";
 
-interface PuzzleResult {
-  puzzleId: number;
-  puzzleName: string;
-  solved: boolean;
-}
-
 interface ResultScreenProps {
   answers: Answers;
-  puzzleResults: PuzzleResult[];
+  totalScore: number;
   assignedLevel: number;
   onRestart: () => void;
 }
 
 export default function ResultScreen({
   answers,
-  puzzleResults,
+  totalScore,
   assignedLevel,
   onRestart,
 }: ResultScreenProps) {
@@ -40,88 +34,39 @@ export default function ResultScreen({
             </p>
           </div>
 
-          {/* Answers Section */}
+          {/* Results Table */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-              Your Answers
+              Results Summary
             </h2>
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 space-y-4">
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-300">Name:</span>{" "}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {answers.firstName || ""} {answers.lastName || ""}
-                </span>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-300">Phone:</span>{" "}
-                <span className="text-gray-600 dark:text-gray-400">{answers.phone || "-"}</span>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Years playing chess:
-                </span>{" "}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {answers.yearsPlaying} {answers.yearsPlaying === 1 ? "year" : "years"}
-                </span>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Knows how to move pieces:
-                </span>{" "}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {answers.knowsPieceMovement ? "Yes" : "No"}
-                </span>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Played tournaments:
-                </span>{" "}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {answers.playedTournaments ? "Yes" : "No"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Puzzle Results Section */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-              Puzzle Results
-            </h2>
-            <div className="space-y-3">
-              {puzzleResults.map((result) => (
-                <div
-                  key={result.puzzleId}
-                  className={`flex items-center justify-between p-4 rounded-lg ${
-                    result.solved
-                      ? "bg-green-50 dark:bg-green-900/30"
-                      : "bg-red-50 dark:bg-red-900/30"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`text-2xl ${
-                        result.solved ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
-                      {result.solved ? "✓" : "✗"}
-                    </span>
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">
-                      {result.puzzleName}
-                    </span>
-                  </div>
-                  <span
-                    className={`font-semibold ${
-                      result.solved
-                        ? "text-green-700 dark:text-green-400"
-                        : "text-red-700 dark:text-red-400"
-                    }`}
-                  >
-                    {result.solved ? "Solved" : "Failed"}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <table className="w-full bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+              <thead>
+                <tr className="text-left border-b border-gray-300 dark:border-gray-600">
+                  <th className="py-2 px-4">Name</th>
+                  <th className="py-2 px-4">Phone</th>
+                  <th className="py-2 px-4">Years Playing</th>
+                  <th className="py-2 px-4">Knows Pieces</th>
+                  <th className="py-2 px-4">Tournaments</th>
+                  <th className="py-2 px-4">Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="py-2 px-4">
+                    {answers.firstName} {answers.lastName}
+                  </td>
+                  <td className="py-2 px-4">{answers.phone || "-"}</td>
+                  <td className="py-2 px-4">{answers.yearsPlaying}</td>
+                  <td className="py-2 px-4">
+                    {answers.knowsPieceMovement ? "Yes" : "No"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {answers.playedTournaments ? "Yes" : "No"}
+                  </td>
+                  <td className="py-2 px-4">{totalScore}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           {/* Restart Button */}

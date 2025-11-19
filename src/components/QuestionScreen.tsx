@@ -81,10 +81,11 @@ export default function QuestionScreen({ onComplete }: QuestionScreenProps) {
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value.replace(/[^0-9+()\-\s]/g, ''))}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 placeholder="Phone number"
               />
+              <p className="text-xs text-gray-500 mt-1">Enter digits, spaces, +, -, or parentheses only.</p>
             </div>
 
             {/* Question 1 */}

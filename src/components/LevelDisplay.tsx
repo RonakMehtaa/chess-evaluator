@@ -3,9 +3,19 @@
 interface LevelDisplayProps {
   level: number;
   onContinue: () => void;
+  tini?: number;
 }
 
-export default function LevelDisplay({ level, onContinue }: LevelDisplayProps) {
+export default function LevelDisplay({ level, onContinue, tini }: LevelDisplayProps) {
+  // Rating range logic
+  const getRatingRange = (tini?: number): string => {
+    if (tini === undefined || tini === null) return "Unknown";
+    if (tini < 200) return "Rating Range: 0-200";
+    if (tini >= 200 && tini < 350) return "Rating Range: 200-350";
+    if (tini >= 350 && tini < 500) return "Rating Range: 350-500";
+    if (tini >= 500 && tini < 650) return "Rating Range: 500-650";
+    return "Rating Range: 650+";
+  };
   const getLevelDescription = (level: number): { title: string; description: string; emoji: string } => {
     switch (level) {
       case 1:
@@ -56,8 +66,11 @@ export default function LevelDisplay({ level, onContinue }: LevelDisplayProps) {
           </p>
 
           <div className="bg-indigo-50 dark:bg-indigo-900/30 rounded-lg p-6 mb-8">
-            <p className="text-gray-700 dark:text-gray-300">
-              Ready to practice puzzles tailored to your level?
+            <p className="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
+              {getRatingRange(tini)}
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 mt-2">
+              To calculate your rating better, proceed with next level puzzles.
             </p>
           </div>
 

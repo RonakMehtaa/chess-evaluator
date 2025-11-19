@@ -8,8 +8,8 @@ import ResultScreen from "@/components/ResultScreen";
 import LevelDisplay from "@/components/LevelDisplay";
 import CompletionScreen from "@/components/CompletionScreen";
 import { puzzles } from "@/data/puzzles";
-import { level1Puzzles, level2Puzzles, level3Puzzles } from "@/data/levelPuzzles";
-import { saveUser, savePuzzleResult } from '../supabaseClient';
+import { level1Puzzles, level2Puzzles, level3Puzzles, level4Puzzles } from "@/data/levelPuzzles";
+import { saveUser, savePuzzleResult, updateFinalRating } from '../supabaseClient';
 
 type AppState = "welcome" | "questions" | "puzzles" | "results" | "levelDisplay" | "levelPuzzles" | "completion";
 
@@ -20,11 +20,25 @@ interface PuzzleResult {
 }
 
 export default function Home() {
+  // Helper to safely parse points which may be a string in JSON
+  const parsePoints = (val: any) => {
+    if (val === undefined || val === null) return 0;
+    if (typeof val === "number" && Number.isFinite(val)) return Math.floor(val);
+    if (typeof val === "string") {
+      // Try to parse integer portion
+      const cleaned = val.replace(/[^0-9-]/g, "");
+      const parsed = parseInt(cleaned, 10);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+    const asNumber = Number(val);
+    return Number.isFinite(asNumber) ? Math.floor(asNumber) : 0;
+  };
   const [state, setState] = useState<AppState>("welcome");
   const [answers, setAnswers] = useState<Answers | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [puzzleResults, setPuzzleResults] = useState<PuzzleResult[]>([]);
+  const [totalScore, setTotalScore] = useState<number>(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [assignedLevel, setAssignedLevel] = useState(0);
   const [levelPuzzleResults, setLevelPuzzleResults] = useState<PuzzleResult[]>([]);
@@ -37,7 +51,9 @@ export default function Home() {
   const handleQuestionsComplete = async (userAnswers: Answers) => {
     setAnswers(userAnswers);
     const name = `${userAnswers.firstName ?? ''} ${userAnswers.lastName ?? ''}`.trim();
-    const email = userAnswers.phone ?? '';
+    // No email field on form; keep email empty. Clean phone to digits only before saving.
+    const email = '';
+    const cleanedPhone = userAnswers.phone ? String(userAnswers.phone).replace(/[^0-9+\-()\s]/g, '') : undefined;
     // Save all user info to Supabase
     const userData = await saveUser(
       name,
@@ -45,7 +61,7 @@ export default function Home() {
       userAnswers.yearsPlaying,
       userAnswers.knowsPieceMovement ?? false,
       userAnswers.playedTournaments ?? false,
-      userAnswers.phone
+      cleanedPhone
     );
     // Store userId for puzzle results
     if (userData && userData.id) {
@@ -67,6 +83,10 @@ export default function Home() {
 
     const updatedResults = [...puzzleResults, newResult];
     setPuzzleResults(updatedResults);
+    // Add points if solved
+    if (solved) {
+      setTotalScore((prev) => prev + parsePoints(currentPuzzle.points));
+    }
 
     if (!solved) {
       const newWrongCount = wrongCount + 1;
@@ -74,8 +94,49 @@ export default function Home() {
 
       // Stop after second wrong puzzle
       if (newWrongCount >= 2) {
-        const level = calculateLevel(updatedResults);
+        // Calculate tini (total initial score) up to the point of stopping
+        const tini = updatedResults.reduce((acc, r) => {
+          if (!r.solved) return acc;
+          const p = puzzles.find(p => p.id === r.puzzleId);
+          return acc + parsePoints(p?.points);
+        }, 0);
+        console.log('Computed initial total (tini) at stop:', tini);
+        let level = 1;
+        if (tini >= 200 && tini < 350) level = 2;
+        else if (tini >= 350 && tini < 500) level = 3;
+        else if (tini >= 500 && tini < 650) level = 4;
         setAssignedLevel(level);
+
+        // Decide baseline (start of range) for the assigned level.
+        // Adjust these values if you want different baseline starts.
+        const baselineForLevel = (lvl: number) => {
+          switch (lvl) {
+            case 1:
+              return 0; // Corrected baseline for level 1
+            case 2:
+              return 200; // Corrected baseline for level 2
+            case 3:
+              return 350;
+            case 4:
+              return 500;
+            default:
+              return 0;
+          }
+        };
+
+        const baseline = baselineForLevel(level);
+        // Set in-memory total to baseline so level puzzles add on top of this
+        setTotalScore(baseline);
+
+        // Persist baseline into final_rating for this user if available
+        if (userId) {
+          try {
+            await updateFinalRating(userId, baseline);
+          } catch (err) {
+            console.error('Failed to update final rating on stop:', err);
+          }
+        }
+
         setState("levelDisplay");
         return;
       }
@@ -86,15 +147,53 @@ export default function Home() {
       setCurrentPuzzleIndex(currentPuzzleIndex + 1);
     } else {
       // All puzzles completed
-      const level = calculateLevel(updatedResults);
+      // Calculate tini (total initial score)
+      const tini = updatedResults.reduce((acc, r) => {
+        if (!r.solved) return acc;
+        const p = puzzles.find(p => p.id === r.puzzleId);
+        return acc + parsePoints(p?.points);
+      }, 0);
+      console.log('Computed initial total (tini) on completion:', tini);
+      let level = 1;
+      if (tini >= 200 && tini < 350) level = 2;
+      else if (tini >= 350 && tini < 500) level = 3;
+      else if (tini >= 500 && tini < 650) level = 4;
       setAssignedLevel(level);
+
+      // Persist baseline final rating for this user if available (we'll add level puzzle points on top)
+      if (userId) {
+        try {
+          // baseline already computed below; compute it here to persist same value
+          const baselineForLevel = (lvl: number) => {
+            switch (lvl) {
+              case 1:
+                return 0;
+              case 2:
+                return 200;
+              case 3:
+                return 350;
+              case 4:
+                return 500;
+              default:
+                return 0;
+            }
+          };
+          const baseline = baselineForLevel(level);
+          // Set in-memory total to baseline so level puzzles add on top of this
+          setTotalScore(baseline);
+          await updateFinalRating(userId, baseline);
+        } catch (err) {
+          console.error('Failed to update final rating on completion:', err);
+        }
+      }
       // Save all initial evaluation puzzle results to DB
       if (userId) {
         for (const result of updatedResults) {
           await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
         }
       }
-      setState("results");
+      // Always go to levelDisplay after initial evaluation, never directly to results
+      setState("levelDisplay");
     }
   };
 
@@ -163,6 +262,12 @@ export default function Home() {
         return level2Puzzles;
       case 3:
         return level3Puzzles;
+      case 4:
+        return level4Puzzles;
+      // If level 5/6 not implemented, fall back to level4 puzzles
+      case 5:
+      case 6:
+        return level4Puzzles;
       default:
         return level1Puzzles;
     }
@@ -180,9 +285,25 @@ export default function Home() {
     const updatedResults = [...levelPuzzleResults, newResult];
     setLevelPuzzleResults(updatedResults);
 
+    // Add points if solved (for level puzzles) — compute new total relative to baseline
+    let newTotal = totalScore ?? 0;
+    if (solved) {
+      const pts = parsePoints(currentPuzzle.points);
+      newTotal = newTotal + pts;
+      setTotalScore(newTotal);
+    }
+
     // Save puzzle result for this user
     if (userId) {
       await savePuzzleResult(userId, assignedLevel, currentPuzzle.id, solved);
+      // Persist updated final rating after each level puzzle
+      if (solved) {
+        try {
+          await updateFinalRating(userId, newTotal);
+        } catch (err) {
+          console.error('Failed to update final rating after level puzzle:', err);
+        }
+      }
     }
 
     // Continue through all level puzzles; redirect to results after the last one
@@ -218,7 +339,8 @@ export default function Home() {
                   await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
                 }
               }
-              setState("results");
+              // Always go to levelDisplay after initial evaluation
+              setState("levelDisplay");
             }}
           >
             End Evaluation
@@ -226,7 +348,13 @@ export default function Home() {
         </div>
       )}
       {state === "levelDisplay" && (
-        <LevelDisplay level={assignedLevel} onContinue={handleLevelDisplayContinue} />
+        <LevelDisplay level={assignedLevel} tini={
+          puzzleResults.reduce((acc, r) => {
+            if (!r.solved) return acc;
+            const p = puzzles.find(p => p.id === r.puzzleId);
+            return acc + parsePoints(p?.points);
+          }, 0)
+        } onContinue={handleLevelDisplayContinue} />
       )}
       {state === "levelPuzzles" && (
         <div className="flex flex-col items-center">
@@ -250,7 +378,7 @@ export default function Home() {
       {state === "results" && answers && (
         <ResultScreen
           answers={answers}
-          puzzleResults={puzzleResults}
+          totalScore={totalScore}
           assignedLevel={assignedLevel}
           onRestart={handleRestart}
         />
