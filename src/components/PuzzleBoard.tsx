@@ -27,6 +27,7 @@ interface PuzzleBoardProps {
   puzzleNumber: number;
   totalPuzzles: number;
   onSolve: (solved: boolean) => void;
+  currentRating?: number;
 }
 
 export default function PuzzleBoard({
@@ -34,6 +35,7 @@ export default function PuzzleBoard({
   puzzleNumber,
   totalPuzzles,
   onSolve,
+  currentRating,
 }: PuzzleBoardProps) {
   // Initialize game with puzzle FEN
   const initialGame = useMemo(() => {
@@ -264,6 +266,15 @@ export default function PuzzleBoard({
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12">
       <div className="w-full max-w-4xl mx-auto px-6">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12">
+          {/* Current Rating Display */}
+          {typeof currentRating === "number" && (
+            <div className="mb-4 text-center">
+              <span className="text-lg font-bold text-indigo-700 dark:text-indigo-300">
+                Current Rating: {currentRating}
+              </span>
+            </div>
+          )}
+
           {/* Progress Indicator */}
           <div className="mb-6 text-center">
             <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mb-2">
@@ -279,9 +290,6 @@ export default function PuzzleBoard({
 
           {/* Puzzle Info */}
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {puzzle.name}
-            </h2>
             <p className="text-gray-600 dark:text-gray-400">
               {puzzle.puzzle_desc || "Find the best move sequence to checkmate your opponent"}
             </p>

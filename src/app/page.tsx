@@ -104,7 +104,7 @@ export default function Home() {
         let level = 1;
         if (tini >= 200 && tini < 350) level = 2;
         else if (tini >= 350 && tini < 500) level = 3;
-        else if (tini >= 500 && tini < 650) level = 4;
+        else if (tini >= 500 && tini < 750) level = 4;
         setAssignedLevel(level);
 
         // Decide baseline (start of range) for the assigned level.
@@ -157,7 +157,7 @@ export default function Home() {
       let level = 1;
       if (tini >= 200 && tini < 350) level = 2;
       else if (tini >= 350 && tini < 500) level = 3;
-      else if (tini >= 500 && tini < 650) level = 4;
+      else if (tini >= 500 && tini < 750) level = 4;
       setAssignedLevel(level);
 
       // Persist baseline final rating for this user if available (we'll add level puzzle points on top)
@@ -329,6 +329,7 @@ export default function Home() {
             puzzleNumber={currentPuzzleIndex + 1}
             totalPuzzles={puzzles.length}
             onSolve={handlePuzzleSolve}
+            currentRating={totalScore}
           />
           <button
             className="mt-6 px-4 py-2 rounded bg-indigo-600 text-white shadow hover:bg-indigo-700 transition"
@@ -363,6 +364,7 @@ export default function Home() {
             puzzleNumber={currentPuzzleIndex + 1}
             totalPuzzles={getLevelPuzzles().length}
             onSolve={handleLevelPuzzleSolve}
+            currentRating={totalScore}
           />
           <button
             className="mt-6 px-4 py-2 rounded bg-red-600 text-white shadow hover:bg-red-700 transition"
