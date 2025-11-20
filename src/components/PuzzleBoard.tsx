@@ -37,6 +37,11 @@ export default function PuzzleBoard({
   onSolve,
   currentRating,
 }: PuzzleBoardProps) {
+  // Local state for rating animation
+  const [ratingPulse, setRatingPulse] = useState(false);
+  const prevRatingRef = useMemo(() => ({ current: currentRating ?? 0 }), []);
+  // AudioContext ref
+  const audioCtxRef = useMemo(() => ({ ctx: null as AudioContext | null }), []);
   // Initialize game with puzzle FEN
   const initialGame = useMemo(() => {
     console.log("Initializing game with FEN:", puzzle.fen);
@@ -87,6 +92,76 @@ export default function PuzzleBoard({
       setLegalMoves([]);
     }
   }, [puzzle.fen, puzzle.id]);
+
+  // Initialize AudioContext lazily
+  useEffect(() => {
+    return () => {
+      if (audioCtxRef.ctx) {
+        try {
+          audioCtxRef.ctx.close();
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+  }, []);
+
+  // Play simple tones using WebAudio
+  const playTone = (freq: number, duration = 0.12, type: OscillatorType = 'sine') => {
+    try {
+      if (!audioCtxRef.ctx) audioCtxRef.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = audioCtxRef.ctx;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      o.connect(g);
+      g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.01);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+      o.stop(ctx.currentTime + duration + 0.02);
+    } catch (e) {
+      // ignore if audio API not available
+      console.error('Audio play failed', e);
+    }
+  };
+
+  // Sound for correct: two ascending tones; incorrect: low buzz
+  const playCorrectSound = () => {
+    playTone(880, 0.08, 'sine');
+    setTimeout(() => playTone(1320, 0.12, 'sine'), 90);
+  };
+  const playIncorrectSound = () => {
+    playTone(220, 0.18, 'sine');
+  };
+
+  // Watch for rating changes to trigger pulse & sound
+  useEffect(() => {
+    const prev = prevRatingRef.current ?? 0;
+    const curr = currentRating ?? 0;
+    if (curr > prev) {
+      setRatingPulse(true);
+      playCorrectSound();
+      const t = setTimeout(() => setRatingPulse(false), 700);
+      // update prev
+      prevRatingRef.current = curr;
+      return () => clearTimeout(t);
+    }
+    // update prev even if not greater
+    prevRatingRef.current = curr;
+  }, [currentRating]);
+
+  // Play incorrect sound on feedback change to incorrect
+  useEffect(() => {
+    if (feedback === 'incorrect') {
+      playIncorrectSound();
+    }
+    if (feedback === 'correct') {
+      // small confirmation tone (already handled by rating change)
+    }
+  }, [feedback]);
 
   // Function to automatically play opponent's move
   const playOpponentMove = (currentGameFen: string, moveIndex: number) => {
@@ -166,17 +241,26 @@ export default function PuzzleBoard({
           if (newMoveHistory.length === puzzle.solution.length) {
             setFeedback("correct");
             setIsComplete(true);
+            // Trigger rating pulse when solved
+            setRatingPulse(true);
+            setTimeout(() => setRatingPulse(false), 600);
             setTimeout(() => {
               onSolve(true);
             }, 1500);
           } else {
             setFeedback("correct");
             playOpponentMove(newFen, moveHistory.length);
+            // small pulse for correct intermediate move
+            setRatingPulse(true);
+            setTimeout(() => setRatingPulse(false), 400);
           }
           return true;
         } else {
           setFeedback("incorrect");
           setIsComplete(true);
+          // pulse and incorrect sound
+          setRatingPulse(true);
+          setTimeout(() => setRatingPulse(false), 600);
           setTimeout(() => {
             onSolve(false);
           }, 1500);
@@ -245,8 +329,10 @@ export default function PuzzleBoard({
   // Helper to get overlay position near promotion square
   const getPromotionOverlayStyle = () => {
     if (!promotionDetails) return { top: "50%", left: "50%" };
-    // Board is always 8x8, 600px max width
-    const boardPx = Math.min(600, typeof window !== "undefined" ? window.innerWidth - 100 : 600);
+    // Board is always 8x8, use a smaller max width so board + UI fits on laptop screens
+    const BOARD_MAX = 480;
+    const horizontalPadding = 160; // leave space for surrounding UI
+    const boardPx = Math.min(BOARD_MAX, typeof window !== "undefined" ? window.innerWidth - horizontalPadding : BOARD_MAX);
     const squarePx = boardPx / 8;
     const file = promotionDetails.to[0].charCodeAt(0) - "a".charCodeAt(0);
     const rank = 8 - parseInt(promotionDetails.to[1]);
@@ -263,126 +349,128 @@ export default function PuzzleBoard({
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12">
-      <div className="w-full max-w-4xl mx-auto px-6">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12">
-          {/* Current Rating Display */}
-          {typeof currentRating === "number" && (
-            <div className="mb-4 text-center">
-              <span className="text-lg font-bold text-indigo-700 dark:text-indigo-300">
-                Current Rating: {currentRating}
-              </span>
-            </div>
-          )}
-
-          {/* Progress Indicator */}
-          <div className="mb-6 text-center">
-            <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mb-2">
-              Puzzle {puzzleNumber} of {totalPuzzles}
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div
-                className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(puzzleNumber / totalPuzzles) * 100}%` }}
-              />
+    <div className="w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="w-full px-4">
+        <div className="grid grid-cols-12 gap-4 items-center min-h-[calc(100vh-120px)]">
+          {/* Left column: Rating panel */}
+          <div className="col-span-3 flex items-center justify-center">
+            <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow p-4 md:p-6 w-full max-w-xs transition-transform duration-300 ${ratingPulse ? 'scale-105 animate-pulse' : ''}`}>
+              <div className="text-center">
+                <div className="text-sm text-gray-500 dark:text-gray-300 mb-1">Current Rating</div>
+                <div className="text-4xl md:text-5xl font-extrabold text-indigo-600 dark:text-indigo-300">
+                  {typeof currentRating === 'number' ? currentRating : 0}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Puzzle Info */}
-          <div className="text-center mb-6">
-            <p className="text-gray-600 dark:text-gray-400">
-              {puzzle.puzzle_desc || "Find the best move sequence to checkmate your opponent"}
-            </p>
-          </div>
+          {/* Center column: main card with chessboard */}
+          <div className="col-span-6 flex items-center justify-center">
+            <div className="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 max-w-3xl">
+              {/* Progress Indicator */}
+              <div className="mb-6 text-center">
+                <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mb-2">
+                  Puzzle {puzzleNumber} of {totalPuzzles}
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div
+                    className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${(puzzleNumber / totalPuzzles) * 100}%` }}
+                  />
+                </div>
+              </div>
 
-          {/* Chessboard */}
-          <div className="flex justify-center mb-6" style={{ position: "relative" }}>
-            <div
-              className={`transition-all duration-300 ${
+              {/* Puzzle Info */}
+              <div className="text-center mb-6">
+                <p className="text-gray-600 dark:text-gray-400">
+                  {puzzle.puzzle_desc || "Find the best move sequence to checkmate your opponent"}
+                </p>
+              </div>
+
+              {/* Chessboard */}
+              <div className={`transition-all duration-300 ${
                 feedback === "correct"
                   ? "ring-4 ring-green-500 rounded-lg"
                   : feedback === "incorrect"
                   ? "ring-4 ring-red-500 rounded-lg"
                   : ""
-              }`}
-            >
-              <div style={{ width: Math.min(600, typeof window !== "undefined" ? window.innerWidth - 100 : 600), position: "relative" }}>
-                <Chessboard
-                  key={`board-${puzzle.id}-${boardPosition}`}
-                  options={{
-                    position: boardPosition,
-                    onPieceDrop: onDrop,
-                    onSquareClick: handleSquareClick,
-                    allowDragging: !isComplete && !isOpponentMoving,
-                    squareStyles: {
-                      [selectedSquare || ""]: {
-                        backgroundColor: selectedSquare ? "rgba(186, 202, 68, 0.8)" : undefined,
+              }`}>
+                <div className="mx-auto" style={{ width: Math.min(480, typeof window !== "undefined" ? Math.min(window.innerWidth - 240, 880) : 480), position: "relative" }}>
+                  <Chessboard
+                    key={`board-${puzzle.id}-${boardPosition}`}
+                    options={{
+                      position: boardPosition,
+                      onPieceDrop: onDrop,
+                      onSquareClick: handleSquareClick,
+                      allowDragging: !isComplete && !isOpponentMoving,
+                      squareStyles: {
+                        [selectedSquare || ""]: {
+                          backgroundColor: selectedSquare ? "rgba(186, 202, 68, 0.8)" : undefined,
+                        },
+                        ...legalMoves.reduce(
+                          (acc, square) => ({
+                            ...acc,
+                            [square]: {
+                              backgroundColor: "rgba(186, 202, 68, 0.4)",
+                            },
+                          }),
+                          {} as Record<string, object>
+                        ),
                       },
-                      ...legalMoves.reduce(
-                        (acc, square) => ({
-                          ...acc,
-                          [square]: {
-                            backgroundColor: "rgba(186, 202, 68, 0.4)",
-                          },
-                        }),
-                        {} as Record<string, object>
-                      ),
-                    },
-                  }}
-                />
-                {/* Promotion overlay */}
-                {promotionDetails && (
-                  <div
-                    className="absolute z-30 flex flex-row gap-2 p-2 bg-white dark:bg-gray-900 rounded shadow-lg border border-gray-300 dark:border-gray-700"
-                    style={{ ...getPromotionOverlayStyle(), transform: "translate(-50%, -50%)" }}
-                  >
-                    {(["q", "r", "b", "n"] as const).map((piece) => (
-                      <button
-                        key={piece}
-                        onClick={() => handlePromotionSelect(piece)}
-                        className="focus:outline-none hover:ring-2 hover:ring-indigo-400 rounded"
-                      >
-                        <img
-                          src={pieceImgs[promotionDetails.color as 'w' | 'b'][piece as 'q' | 'r' | 'b' | 'n']}
-                          alt={piece}
-                          className="w-12 h-12"
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
+                    }}
+                  />
+                  {/* Promotion overlay */}
+                  {promotionDetails && (
+                    <div
+                      className="absolute z-30 flex flex-row gap-2 p-2 bg-white dark:bg-gray-900 rounded shadow-lg border border-gray-300 dark:border-gray-700"
+                      style={{ ...getPromotionOverlayStyle(), transform: "translate(-50%, -50%)" }}
+                    >
+                      {(["q", "r", "b", "n"] as const).map((piece) => (
+                        <button
+                          key={piece}
+                          onClick={() => handlePromotionSelect(piece)}
+                          className="focus:outline-none hover:ring-2 hover:ring-indigo-400 rounded"
+                        >
+                          <img
+                            src={pieceImgs[promotionDetails.color as 'w' | 'b'][piece as 'q' | 'r' | 'b' | 'n']}
+                            alt={piece}
+                            className="w-12 h-12"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* Feedback */}
+              {feedback && (
+                <div
+                  className={`text-center py-4 rounded-lg mb-4 transition-all duration-300 ${
+                    feedback === "correct"
+                      ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
+                      : "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200"
+                  }`}
+                >
+                  <p className="text-lg font-semibold">
+                    {feedback === "correct" ? "✓ Correct! Well done!" : "✗ Incorrect"}
+                  </p>
+                </div>
+              )}
+
+              {/* Opponent moving indicator */}
+              {isOpponentMoving && (
+                <div className="text-center py-4 rounded-lg mb-4 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                  <p className="text-lg font-semibold">Opponent is thinking...</p>
+                </div>
+              )}
+
+              {/* Move history intentionally hidden per UX request */}
             </div>
           </div>
 
-          {/* Feedback */}
-          {feedback && (
-            <div
-              className={`text-center py-4 rounded-lg mb-4 transition-all duration-300 ${
-                feedback === "correct"
-                  ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
-                  : "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200"
-              }`}
-            >
-              <p className="text-lg font-semibold">
-                {feedback === "correct" ? "✓ Correct! Well done!" : "✗ Incorrect"}
-              </p>
-            </div>
-          )}
-
-          {/* Opponent moving indicator */}
-          {isOpponentMoving && (
-            <div className="text-center py-4 rounded-lg mb-4 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-              <p className="text-lg font-semibold">Opponent is thinking...</p>
-            </div>
-          )}
-
-          {/* Move History */}
-          {moveHistory.length > 0 && (
-            <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-              Moves played: {moveHistory.join(", ")}
-            </div>
-          )}
+          {/* Right column: spacer for balance */}
+          <div className="col-span-3" />
         </div>
       </div>
     </div>

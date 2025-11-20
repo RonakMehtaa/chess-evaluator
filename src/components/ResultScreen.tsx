@@ -34,39 +34,27 @@ export default function ResultScreen({
             </p>
           </div>
 
-          {/* Results Table */}
+          {/* Results Summary (vertical list) */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
               Results Summary
             </h2>
-            <table className="w-full bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-              <thead>
-                <tr className="text-left border-b border-gray-300 dark:border-gray-600">
-                  <th className="py-2 px-4">Name</th>
-                  <th className="py-2 px-4">Phone</th>
-                  <th className="py-2 px-4">Years Playing</th>
-                  <th className="py-2 px-4">Knows Pieces</th>
-                  <th className="py-2 px-4">Tournaments</th>
-                  <th className="py-2 px-4">Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="py-2 px-4">
-                    {answers.firstName} {answers.lastName}
-                  </td>
-                  <td className="py-2 px-4">{answers.phone || "-"}</td>
-                  <td className="py-2 px-4">{answers.yearsPlaying}</td>
-                  <td className="py-2 px-4">
-                    {answers.knowsPieceMovement ? "Yes" : "No"}
-                  </td>
-                  <td className="py-2 px-4">
-                    {answers.playedTournaments ? "Yes" : "No"}
-                  </td>
-                  <td className="py-2 px-4">{totalScore}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+              <div className="space-y-3 text-gray-800 dark:text-gray-200 text-base">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Name</span>
+                  <span>{answers.firstName} {answers.lastName}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Number</span>
+                  <span>{answers.phone || "-"}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Score</span>
+                  <span>{totalScore}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Restart Button */}

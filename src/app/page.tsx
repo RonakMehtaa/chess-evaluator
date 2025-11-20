@@ -9,7 +9,7 @@ import LevelDisplay from "@/components/LevelDisplay";
 import CompletionScreen from "@/components/CompletionScreen";
 import { puzzles } from "@/data/puzzles";
 import { level1Puzzles, level2Puzzles, level3Puzzles, level4Puzzles } from "@/data/levelPuzzles";
-import { saveUser, savePuzzleResult, updateFinalRating } from '../supabaseClient';
+import { saveUser, savePuzzleResult, updateFinalRating, getUserByPhone } from '../supabaseClient';
 
 type AppState = "welcome" | "questions" | "puzzles" | "results" | "levelDisplay" | "levelPuzzles" | "completion";
 
@@ -43,6 +43,31 @@ export default function Home() {
   const [assignedLevel, setAssignedLevel] = useState(0);
   const [levelPuzzleResults, setLevelPuzzleResults] = useState<PuzzleResult[]>([]);
   const [levelWrongCount, setLevelWrongCount] = useState(0);
+  // Milestone banner state for initial evaluation (shows once per threshold)
+  const [milestoneMessage, setMilestoneMessage] = useState<string | null>(null);
+  const [shownMilestones, setShownMilestones] = useState<number[]>([]);
+
+  const milestoneTexts: Record<number, string> = {
+    4: "Great going! You’ve cleared Level 1. Best of luck for the next puzzles!",
+    7: "Awesome! You’ve cleared Level 2. Keep it up!",
+    10: "Fantastic! You’ve cleared Level 3. Great job completing all the puzzles!",
+  };
+
+  const tryShowMilestone = (completedCount: number) => {
+    const thresholds = [4, 7, 10];
+    for (const t of thresholds) {
+      if (completedCount >= t && !shownMilestones.includes(t)) {
+        const msg = milestoneTexts[t];
+        if (msg) {
+          setMilestoneMessage(msg);
+          setShownMilestones((prev) => [...prev, t]);
+          // Auto-hide after 4.5s
+          setTimeout(() => setMilestoneMessage(null), 4500);
+        }
+        break; // show one milestone at a time
+      }
+    }
+  };
 
   const handleStart = () => {
     setState("questions");
@@ -51,18 +76,30 @@ export default function Home() {
   const handleQuestionsComplete = async (userAnswers: Answers) => {
     setAnswers(userAnswers);
     const name = `${userAnswers.firstName ?? ''} ${userAnswers.lastName ?? ''}`.trim();
-    // No email field on form; keep email empty. Clean phone to digits only before saving.
-    const email = '';
-    const cleanedPhone = userAnswers.phone ? String(userAnswers.phone).replace(/[^0-9+\-()\s]/g, '') : undefined;
-    // Save all user info to Supabase
-    const userData = await saveUser(
-      name,
-      email,
-      userAnswers.yearsPlaying,
-      userAnswers.knowsPieceMovement ?? false,
-      userAnswers.playedTournaments ?? false,
-      cleanedPhone
-    );
+  // Clean phone to digits only before saving.
+  const cleanedPhone = userAnswers.phone ? String(userAnswers.phone).replace(/[^0-9+\-()\s]/g, '') : undefined;
+
+    // Phone is mandatory — guard against missing phone
+    if (!cleanedPhone) {
+      alert('Phone number is required. Please enter your phone number.');
+      setState('questions');
+      return;
+    }
+
+    // Check if a user with this phone already exists. If so, inform the user and stop.
+    try {
+      const existing = await getUserByPhone(cleanedPhone);
+      if (existing) {
+        alert('This phone number is already used.');
+        setState('questions');
+        return;
+      }
+    } catch (err) {
+      console.error('Phone lookup failed, continuing to create user:', err);
+    }
+
+    // Save user (name + phone)
+    const userData = await saveUser(name, cleanedPhone);
     // Store userId for puzzle results
     if (userData && userData.id) {
       setUserId(userData.id);
@@ -83,6 +120,8 @@ export default function Home() {
 
     const updatedResults = [...puzzleResults, newResult];
     setPuzzleResults(updatedResults);
+    // Check for milestone banners (initial evaluation completed count)
+    tryShowMilestone(updatedResults.length);
     // Add points if solved
     if (solved) {
       setTotalScore((prev) => prev + parsePoints(currentPuzzle.points));
@@ -232,6 +271,8 @@ export default function Home() {
           await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
         }
       }
+      // final completion counts as milestones too
+      tryShowMilestone(updatedResults.length);
       // Always go to levelDisplay after initial evaluation, never directly to results
       setState("levelDisplay");
     }
@@ -377,13 +418,20 @@ export default function Home() {
 
 
   return (
-    <main>
+    <main className="min-h-screen w-full">
       {state === "welcome" && <WelcomeScreen onStart={handleStart} />}
       {state === "questions" && (
         <QuestionScreen onComplete={handleQuestionsComplete} />
       )}
       {state === "puzzles" && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-stretch w-full min-h-screen">
+          {milestoneMessage && (
+            <div className="mx-auto mt-6">
+              <div className="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg shadow">
+                {milestoneMessage}
+              </div>
+            </div>
+          )}
           <PuzzleBoard
             puzzle={puzzles[currentPuzzleIndex]}
             puzzleNumber={currentPuzzleIndex + 1}
@@ -391,56 +439,24 @@ export default function Home() {
             onSolve={handlePuzzleSolve}
             currentRating={totalScore}
           />
-          <button
-            className="mt-6 px-4 py-2 rounded bg-indigo-600 text-white shadow hover:bg-indigo-700 transition"
-            onClick={async () => {
-              // Calculate tini from puzzleResults
-              const tini = puzzleResults.reduce((acc, r) => {
-                if (!r.solved) return acc;
-                const p = puzzles.find(p => p.id === r.puzzleId);
-                return acc + parsePoints(p?.points);
-              }, 0);
-
-              // Save all puzzleResults to DB for this user
-              if (userId) {
-                for (const result of puzzleResults) {
-                  await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
-                }
-              }
-
-              // If initial rating exceeds 650, skip level puzzles and show results
-              if (tini > 650) {
-                setTotalScore(tini);
-                if (userId) {
-                  try {
-                    await updateFinalRating(userId, tini);
-                  } catch (err) {
-                    console.error('Failed to update final rating when skipping levels from End Evaluation:', err);
-                  }
-                }
-                setState("results");
-                return;
-              }
-
-              // Otherwise go to levelDisplay after initial evaluation
-              setState("levelDisplay");
-            }}
-          >
-            End Evaluation
-          </button>
         </div>
       )}
       {state === "levelDisplay" && (
-        <LevelDisplay level={assignedLevel} tini={
-          puzzleResults.reduce((acc, r) => {
-            if (!r.solved) return acc;
-            const p = puzzles.find(p => p.id === r.puzzleId);
-            return acc + parsePoints(p?.points);
-          }, 0)
-        } onContinue={handleLevelDisplayContinue} />
+        <LevelDisplay
+          level={assignedLevel}
+          tini={
+            puzzleResults.reduce((acc, r) => {
+              if (!r.solved) return acc;
+              const p = puzzles.find(p => p.id === r.puzzleId);
+              return acc + parsePoints(p?.points);
+            }, 0)
+          }
+          results={puzzleResults}
+          onContinue={handleLevelDisplayContinue}
+        />
       )}
       {state === "levelPuzzles" && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-stretch w-full min-h-screen">
           <PuzzleBoard
             puzzle={getLevelPuzzles()[currentPuzzleIndex]}
             puzzleNumber={currentPuzzleIndex + 1}
@@ -448,12 +464,14 @@ export default function Home() {
             onSolve={handleLevelPuzzleSolve}
             currentRating={totalScore}
           />
-          <button
-            className="mt-6 px-4 py-2 rounded bg-red-600 text-white shadow hover:bg-red-700 transition"
-            onClick={() => setState("results")}
-          >
-            End Evaluation
-          </button>
+          <div className="flex justify-center md:justify-end w-full">
+            <button
+              className="mt-6 px-4 py-2 rounded bg-red-600 text-white shadow hover:bg-red-700 transition"
+              onClick={() => setState("results")}
+            >
+              End Evaluation
+            </button>
+          </div>
         </div>
       )}
       {state === "completion" && (

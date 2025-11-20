@@ -19,41 +19,17 @@ export async function testSupabaseConnection() {
 // Save user info to Supabase
 export async function saveUser(
   name: string,
-  email: string,
-  yearsPlaying: number,
-  knowsPieceMovement: boolean,
-  playedTournaments: boolean,
   phone?: string,
   finalRating?: number // Added finalRating parameter
 ) {
   try {
-    // Check if a user with the same email already exists
-    const { data: existingUser, error: fetchError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
-
-    if (existingUser) {
-      console.warn(`A user with the email ${email} already exists. No new record was created.`);
-      return null; // Return null to indicate no new record was created
-    }
-
-    if (fetchError && fetchError.code !== 'PGRST116') { // Ignore "No rows found" error
-      console.error('Error fetching user:', fetchError);
-      return null;
-    }
-
-    // Insert a new user record
+    // Note: phone is the unique identifier at app level
+    // Insert a new user record with only relevant columns
     const res = await supabase
       .from('users')
       .insert([
         {
           name,
-          email,
-          years_playing: yearsPlaying,
-          knows_piece_movement: knowsPieceMovement,
-          played_tournaments: playedTournaments,
           phone,
           final_rating: finalRating,
         }
@@ -117,6 +93,30 @@ export async function updateFinalRating(userId: string, finalRating: number) {
     return data;
   } catch (err) {
     console.error('Exception updating final rating:', err);
+    return null;
+  }
+}
+
+// Lookup user by phone (returns user row or null)
+export async function getUserByPhone(phone?: string) {
+  if (!phone) return null;
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('phone', phone)
+      .single();
+    if (error) {
+      // If no rows found, supabase returns an error; return null for not found
+      // Other errors are logged
+      // PGRST116 is 'No rows found' for PostgREST
+      if ((error as any)?.code === 'PGRST116') return null;
+      console.error('Error fetching user by phone:', error);
+      return null;
+    }
+    return data;
+  } catch (err) {
+    console.error('Exception fetching user by phone:', err);
     return null;
   }
 }
