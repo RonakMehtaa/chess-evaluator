@@ -13,8 +13,8 @@ export default function LevelDisplay({ level, onContinue, tini }: LevelDisplayPr
     if (tini < 200) return "Rating Range: 0-200";
     if (tini >= 200 && tini < 350) return "Rating Range: 200-350";
     if (tini >= 350 && tini < 500) return "Rating Range: 350-500";
-    if (tini >= 500 && tini < 750) return "Rating Range: 500-750";
-    return "Rating Range: 750+";
+    if (tini >= 500 && tini < 650) return "Rating Range: 500-650";
+    return "Rating Range: 650+";
   };
 
   return (

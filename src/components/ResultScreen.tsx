@@ -24,13 +24,13 @@ export default function ResultScreen({
             Evaluation Complete
           </h1>
 
-          {/* Assigned Level */}
+          {/* Rating Summary */}
           <div className="bg-indigo-100 dark:bg-indigo-900 rounded-lg p-6 mb-8 text-center">
             <p className="text-lg text-indigo-800 dark:text-indigo-200 mb-2">
-              Your Assigned Level
+              Your Rating
             </p>
             <p className="text-5xl font-bold text-indigo-600 dark:text-indigo-400">
-              Level {assignedLevel}
+              {totalScore}
             </p>
           </div>
 

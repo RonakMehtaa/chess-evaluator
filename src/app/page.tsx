@@ -101,10 +101,10 @@ export default function Home() {
           return acc + parsePoints(p?.points);
         }, 0);
         console.log('Computed initial total (tini) at stop:', tini);
-        let level = 1;
-        if (tini >= 200 && tini < 350) level = 2;
-        else if (tini >= 350 && tini < 500) level = 3;
-        else if (tini >= 500 && tini < 750) level = 4;
+  let level = 1;
+  if (tini >= 200 && tini < 350) level = 2;
+  else if (tini >= 350 && tini < 500) level = 3;
+  else if (tini >= 500 && tini < 650) level = 4;
         setAssignedLevel(level);
 
         // Decide baseline (start of range) for the assigned level.
@@ -125,6 +125,27 @@ export default function Home() {
         };
 
         const baseline = baselineForLevel(level);
+
+        // If the player's initial rating is already greater than 650,
+        // don't show level puzzles — show final rating/results instead.
+        if (tini > 650) {
+          // Use tini as final rating
+          setTotalScore(tini);
+          if (userId) {
+            try {
+              await updateFinalRating(userId, tini);
+            } catch (err) {
+              console.error('Failed to update final rating when skipping levels:', err);
+            }
+            // Save initial evaluation puzzle results
+            for (const result of updatedResults) {
+              await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
+            }
+          }
+          setState("results");
+          return;
+        }
+
         // Set in-memory total to baseline so level puzzles add on top of this
         setTotalScore(baseline);
 
@@ -157,30 +178,49 @@ export default function Home() {
       let level = 1;
       if (tini >= 200 && tini < 350) level = 2;
       else if (tini >= 350 && tini < 500) level = 3;
-      else if (tini >= 500 && tini < 750) level = 4;
+      else if (tini >= 500 && tini < 650) level = 4;
       setAssignedLevel(level);
 
       // Persist baseline final rating for this user if available (we'll add level puzzle points on top)
+      // baseline helper
+      const baselineForLevel = (lvl: number) => {
+        switch (lvl) {
+          case 1:
+            return 0;
+          case 2:
+            return 200;
+          case 3:
+            return 350;
+          case 4:
+            return 500;
+          default:
+            return 0;
+        }
+      };
+      const baseline = baselineForLevel(level);
+
+      // If initial rating exceeds 650, skip level puzzles and show results
+      if (tini > 650) {
+        setTotalScore(tini);
+        if (userId) {
+          try {
+            await updateFinalRating(userId, tini);
+            // Save all initial evaluation puzzle results to DB
+            for (const result of updatedResults) {
+              await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
+            }
+          } catch (err) {
+            console.error('Failed to update final rating on completion when skipping levels:', err);
+          }
+        }
+        setState("results");
+        return;
+      }
+
+      // Set in-memory total to baseline so level puzzles add on top of this
+      setTotalScore(baseline);
       if (userId) {
         try {
-          // baseline already computed below; compute it here to persist same value
-          const baselineForLevel = (lvl: number) => {
-            switch (lvl) {
-              case 1:
-                return 0;
-              case 2:
-                return 200;
-              case 3:
-                return 350;
-              case 4:
-                return 500;
-              default:
-                return 0;
-            }
-          };
-          const baseline = baselineForLevel(level);
-          // Set in-memory total to baseline so level puzzles add on top of this
-          setTotalScore(baseline);
           await updateFinalRating(userId, baseline);
         } catch (err) {
           console.error('Failed to update final rating on completion:', err);
@@ -248,6 +288,26 @@ export default function Home() {
   };
 
   const handleLevelDisplayContinue = () => {
+    // Ensure totalScore is set to baseline for the assigned level before starting
+    const baselineForLevel = (lvl: number) => {
+      switch (lvl) {
+        case 1:
+          return 0;
+        case 2:
+          return 200;
+        case 3:
+          return 350;
+        case 4:
+          return 500;
+        default:
+          return 0;
+      }
+    };
+    const baseline = baselineForLevel(assignedLevel);
+    setTotalScore(baseline);
+    if (userId) {
+      updateFinalRating(userId, baseline).catch((err) => console.error('Failed to persist baseline on start level puzzles:', err));
+    }
     setState("levelPuzzles");
     setCurrentPuzzleIndex(0);
     setLevelPuzzleResults([]);
@@ -334,13 +394,35 @@ export default function Home() {
           <button
             className="mt-6 px-4 py-2 rounded bg-indigo-600 text-white shadow hover:bg-indigo-700 transition"
             onClick={async () => {
+              // Calculate tini from puzzleResults
+              const tini = puzzleResults.reduce((acc, r) => {
+                if (!r.solved) return acc;
+                const p = puzzles.find(p => p.id === r.puzzleId);
+                return acc + parsePoints(p?.points);
+              }, 0);
+
               // Save all puzzleResults to DB for this user
               if (userId) {
                 for (const result of puzzleResults) {
                   await savePuzzleResult(userId, 0, result.puzzleId, result.solved);
                 }
               }
-              // Always go to levelDisplay after initial evaluation
+
+              // If initial rating exceeds 650, skip level puzzles and show results
+              if (tini > 650) {
+                setTotalScore(tini);
+                if (userId) {
+                  try {
+                    await updateFinalRating(userId, tini);
+                  } catch (err) {
+                    console.error('Failed to update final rating when skipping levels from End Evaluation:', err);
+                  }
+                }
+                setState("results");
+                return;
+              }
+
+              // Otherwise go to levelDisplay after initial evaluation
               setState("levelDisplay");
             }}
           >
