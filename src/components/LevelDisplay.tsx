@@ -33,10 +33,10 @@ export default function LevelDisplay({ level, onContinue, tini, results }: Level
           </h2>
           {/* Initial evaluation results (if any) */}
           {results && results.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Your Initial Puzzle Results</h3>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-left">
-                <table className="w-full text-sm">
+            <div className="mb-4">
+              <h3 className="text-base font-medium text-gray-800 dark:text-gray-200 mb-2">Your Initial Puzzle Results</h3>
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 text-left max-h-36 overflow-auto">
+                <table className="w-full text-xs">
                   <thead>
                     <tr className="text-left">
                       <th className="py-1">Puzzle</th>
@@ -46,8 +46,8 @@ export default function LevelDisplay({ level, onContinue, tini, results }: Level
                   <tbody>
                     {results.map((r: PuzzleResult) => (
                       <tr key={r.puzzleId} className="border-t border-gray-200 dark:border-gray-600">
-                        <td className="py-2">{r.puzzleName}</td>
-                        <td className="py-2">{r.solved ? <span className="text-green-600">✓ Solved</span> : <span className="text-red-600">✗ Incorrect</span>}</td>
+                        <td className="py-1">{r.puzzleName}</td>
+                        <td className="py-1">{r.solved ? <span className="text-green-600">✓ Solved</span> : <span className="text-red-600">✗ Incorrect</span>}</td>
                       </tr>
                     ))}
                   </tbody>

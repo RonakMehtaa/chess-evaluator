@@ -434,6 +434,15 @@ export default function PuzzleBoard({
                 </div>
               </div>
 
+              {/* Feedback and opponent indicator moved to the right column to avoid shifting the board */}
+
+              {/* Move history intentionally hidden per UX request */}
+            </div>
+          </div>
+
+          {/* Right column: feedback & opponent status so board stays static */}
+          <div className="col-span-3 flex items-start justify-center">
+            <div className="w-full max-w-xs">
               {/* Feedback */}
               {feedback && (
                 <div
@@ -455,13 +464,8 @@ export default function PuzzleBoard({
                   <p className="text-lg font-semibold">Opponent is thinking...</p>
                 </div>
               )}
-
-              {/* Move history intentionally hidden per UX request */}
             </div>
           </div>
-
-          {/* Right column: spacer for balance */}
-          <div className="col-span-3" />
         </div>
       </div>
     </div>

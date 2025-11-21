@@ -75,7 +75,7 @@ export default function Home() {
 
   const handleQuestionsComplete = async (userAnswers: Answers) => {
     setAnswers(userAnswers);
-    const name = `${userAnswers.firstName ?? ''} ${userAnswers.lastName ?? ''}`.trim();
+  const name = (userAnswers.fullName ?? '').trim();
   // Clean phone to digits only before saving.
   const cleanedPhone = userAnswers.phone ? String(userAnswers.phone).replace(/[^0-9+\-()\s]/g, '') : undefined;
 
@@ -143,7 +143,7 @@ export default function Home() {
   let level = 1;
   if (tini >= 200 && tini < 350) level = 2;
   else if (tini >= 350 && tini < 500) level = 3;
-  else if (tini >= 500 && tini < 650) level = 4;
+  else if (tini >= 500 && tini <= 650) level = 4;
         setAssignedLevel(level);
 
         // Decide baseline (start of range) for the assigned level.
