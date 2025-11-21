@@ -348,6 +348,9 @@ export default function PuzzleBoard({
     setPromotionDetails(null);
   };
 
+  // Determine board orientation: flip if it's black to move
+  const boardOrientation = (game && typeof game.turn === 'function' && game.turn() === 'b') ? 'black' : 'white';
+
   return (
     <div className="w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="w-full px-4">
@@ -356,7 +359,7 @@ export default function PuzzleBoard({
           <div className="col-span-3 flex items-center justify-center">
             <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow p-4 md:p-6 w-full max-w-xs transition-transform duration-300 ${ratingPulse ? 'scale-105 animate-pulse' : ''}`}>
               <div className="text-center">
-                <div className="text-sm text-gray-500 dark:text-gray-300 mb-1">Current Rating</div>
+                <div className="text-sm text-gray-500 dark:text-gray-300 mb-1">Current Points</div>
                 <div className="text-4xl md:text-5xl font-extrabold text-indigo-600 dark:text-indigo-300">
                   {typeof currentRating === 'number' ? currentRating : 0}
                 </div>
@@ -403,21 +406,9 @@ export default function PuzzleBoard({
                       onPieceDrop: onDrop,
                       onSquareClick: handleSquareClick,
                       allowDragging: !isComplete && !isOpponentMoving,
-                      squareStyles: {
-                        [selectedSquare || ""]: {
-                          backgroundColor: selectedSquare ? "rgba(186, 202, 68, 0.8)" : undefined,
-                        },
-                        ...legalMoves.reduce(
-                          (acc, square) => ({
-                            ...acc,
-                            [square]: {
-                              backgroundColor: "rgba(186, 202, 68, 0.4)",
-                            },
-                          }),
-                          {} as Record<string, object>
-                        ),
-                      },
                     }}
+                    // @ts-ignore - react-chessboard typing here doesn't include orientation in our installed version
+                    orientation={boardOrientation}
                   />
                   {/* Promotion overlay */}
                   {promotionDetails && (

@@ -57,15 +57,7 @@ export default function ResultScreen({
             </div>
           </div>
 
-          {/* Restart Button */}
-          <div className="text-center">
-            <button
-              onClick={onRestart}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors duration-200 shadow-md hover:shadow-lg"
-            >
-              Start New Evaluation
-            </button>
-          </div>
+          {/* 'Start New Evaluation' removed per UX request */}
         </div>
       </div>
     </div>

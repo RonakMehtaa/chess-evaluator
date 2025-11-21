@@ -39,15 +39,8 @@ export default function CompletionScreen({ level, onRestart }: CompletionScreenP
           </div>
 
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            Feel free to take the evaluation again to challenge yourself or explore different levels.
+            Thank you for completing the evaluation.
           </p>
-
-          <button
-            onClick={onRestart}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-md hover:shadow-lg w-full md:w-auto"
-          >
-            Start New Evaluation
-          </button>
         </div>
       </div>
     </div>
