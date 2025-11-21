@@ -2,81 +2,151 @@
   {
     "id": 1,
     "name": "Puzzle 1",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play and Pin.",
     "fen": "r3k2r/pp3pp1/7p/2p5/2P1q3/6P1/PP3P1P/2RQ1RK1 w kq - 0 1",
-    "solution": ["d1e1"],
+    "solution": [
+      "f1e1"
+    ],
     "opponentMoves": []
   },
   {
     "id": 2,
     "name": "Puzzle 2",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play and win material using Skewer.",
     "fen": "4r1k1/rb1n1ppp/2p5/ppq1p3/8/P2P4/BPP2PPP/R1BQ1RK1 w - - 0 1",
-    "solution": ["c1e3", "d5e7", "e3a7"],
-    "opponentMoves": ["e7e7", "a7a7"]
+    "solution": [
+      "c1e3",
+      "e3a7"
+    ],
+    "opponentMoves": [
+      "c5e7"
+    ]
   },
   {
     "id": 3,
     "name": "Puzzle 3",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play and win.",
     "fen": "8/4qppk/p1b1p2p/1p2P3/1P6/P3B2P/4QPP1/6K1 w - - 0 1",
-    "solution": ["e3c2", "h7g8", "c2c6"],
-    "opponentMoves": ["g8g8", "c6c6"]
+    "solution": [
+      "e2c2",
+      "c2c6"
+    ],
+    "opponentMoves": [
+      "h7g8"
+    ]
   },
   {
     "id": 4,
     "name": "Puzzle 4",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play and win.",
     "fen": "r4rk1/pp3ppp/2nq1n2/2p5/8/3B1N2/P1P2PPP/R2QR1K1 w - - 0 1",
-    "solution": ["d3h7", "g7h7", "d6d6"],
-    "opponentMoves": ["h7h7", "d6d6"]
+    "solution": [
+      "d3h7",
+      "d1d6"
+    ],
+    "opponentMoves": [
+      "g8h7"
+    ]
   },
   {
     "id": 5,
     "name": "Puzzle 5",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play and defend checkmate.",
     "fen": "r4rk1/ppp2ppp/1n1p4/1B1P4/8/2N2qPb/PPPQ1P1P/3RR1K1 w - - 0 1",
-    "solution": ["b5f1"],
+    "solution": [
+      "b5f1"
+    ],
     "opponentMoves": []
   },
   {
     "id": 6,
     "name": "Puzzle 6",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play and win material.",
     "fen": "rnb1kb1r/ppp2ppp/2qp4/3N4/4P1n1/6Q1/PPP2PPP/R1B1KBNR w KQkq - 0 1",
-    "solution": ["c1b5", "d6b5", "d5c7", "b5d7", "c7b5"],
-    "opponentMoves": ["b5b5", "c7c7", "b5b5", "d7d7"]
+    "solution": [
+      "f1b5",
+      "d5c7",
+      "c7b5"
+    ],
+    "opponentMoves": [
+      "c6b5",
+      "e8d7"
+    ]
   },
   {
     "id": 7,
     "name": "Puzzle 7",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play and Mate in 2 moves.",
     "fen": "r4r1k/pp1R4/5p1p/4pB1Q/5q2/7P/PP3PP1/6K1 w - - 0 1",
-    "solution": ["d7h7", "h8g8", "h7g6"],
-    "opponentMoves": ["g8g8", "g6g6"]
+    "solution": [
+      "d7h7",
+      "h5g6"
+    ],
+    "opponentMoves": [
+      "h8g8"
+    ]
   },
   {
     "id": 8,
     "name": "Puzzle 8",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play. Find the best move.",
     "fen": "8/1kr4b/pp5p/6p1/8/3B4/PP4PP/2R3K1 w - - 0 1",
-    "solution": ["c3c7", "b7c7", "d3h7"],
-    "opponentMoves": ["c7c7", "h7h7"]
+    "solution": [
+      "c1c7",
+      "d3h7"
+    ],
+    "opponentMoves": [
+      "b7c7"
+    ]
   },
   {
     "id": 9,
     "name": "Puzzle 9",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play. Find the best move.",
     "fen": "8/2p5/1p5p/k6P/P5P1/1K6/8/8 w - - 0 1",
-    "solution": ["g4g5", "h5h6", "h6h7", "h7h8q"],
-    "opponentMoves": ["h6g5", "g5g4", "g4g3"]
+    "solution": [
+      "g4g5",
+      "h5h6",
+      "h6h7",
+      "h7h8q"
+    ],
+    "opponentMoves": [
+      "h6g5",
+      "g5g4",
+      "g4g3"
+    ]
   },
   {
     "id": 10,
     "name": "Puzzle 10",
-    "difficulty": "Level 2",
+    "difficulty": "Level 3",
+    "points": "15",
+    "puzzle_desc": "White to play. Find the best move.",
     "fen": "rnb1kbnr/pppp1p1p/8/8/2B1Ppp1/2N2NqP/PPPP2P1/R1BQ1K1R w kq - 0 1",
-    "solution": ["g1e2", "g3f3", "e2g3"],
-    "opponentMoves": ["f3f3", "g3g3"]
+    "solution": [
+      "c3e2",
+      "e2g3"
+    ],
+    "opponentMoves": [
+      "g4f3"
+    ]
   }
 ]

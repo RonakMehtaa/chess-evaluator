@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 export interface Answers {
-  yearsPlaying: number;
-  knowsPieceMovement: boolean | null;
-  playedTournaments: boolean | null;
+  yearsPlaying?: number;
+  knowsPieceMovement?: boolean | null;
+  playedTournaments?: boolean | null;
   firstName?: string;
   lastName?: string;
   phone?: string;
@@ -19,22 +19,18 @@ export default function QuestionScreen({ onComplete }: QuestionScreenProps) {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
-  const [yearsPlaying, setYearsPlaying] = useState<number>(0);
-  const [knowsPieceMovement, setKnowsPieceMovement] = useState<boolean | null>(null);
-  const [playedTournaments, setPlayedTournaments] = useState<boolean | null>(null);
+  // yearsPlaying/knowsPieceMovement/playedTournaments removed per UX request
 
   const handleSubmit = () => {
-    if (knowsPieceMovement === null || playedTournaments === null) {
-      alert("Please answer all questions before continuing.");
+    // Phone is required
+    if (!phone) {
+      alert("Please enter your phone number before continuing.");
       return;
     }
     onComplete({
       firstName,
       lastName,
       phone,
-      yearsPlaying,
-      knowsPieceMovement,
-      playedTournaments,
     });
   };
 
@@ -81,84 +77,15 @@ export default function QuestionScreen({ onComplete }: QuestionScreenProps) {
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value.replace(/[^0-9+()\-\s]/g, ''))}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Phone number"
+                placeholder="Phone number (required)"
+                required
               />
+              <p className="text-xs text-gray-500 mt-1">Enter digits, spaces, +, -, or parentheses only.</p>
             </div>
 
-            {/* Question 1 */}
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                How many years have you been playing chess?
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={yearsPlaying}
-                onChange={(e) => setYearsPlaying(parseInt(e.target.value) || 0)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Enter number of years"
-              />
-            </div>
-
-            {/* Question 2 */}
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Do you know how to move the pieces?
-              </label>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setKnowsPieceMovement(true)}
-                  className={`flex-1 py-3 px-6 rounded-lg font-medium transition-colors ${
-                    knowsPieceMovement === true
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  Yes
-                </button>
-                <button
-                  onClick={() => setKnowsPieceMovement(false)}
-                  className={`flex-1 py-3 px-6 rounded-lg font-medium transition-colors ${
-                    knowsPieceMovement === false
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  No
-                </button>
-              </div>
-            </div>
-
-            {/* Question 3 */}
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Have you played any tournaments?
-              </label>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setPlayedTournaments(true)}
-                  className={`flex-1 py-3 px-6 rounded-lg font-medium transition-colors ${
-                    playedTournaments === true
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  Yes
-                </button>
-                <button
-                  onClick={() => setPlayedTournaments(false)}
-                  className={`flex-1 py-3 px-6 rounded-lg font-medium transition-colors ${
-                    playedTournaments === false
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  No
-                </button>
-              </div>
-            </div>
+            {/* Removed extra questions per UX request */}
 
             {/* Submit Button */}
             <button

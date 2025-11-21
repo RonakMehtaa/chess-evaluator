@@ -25,6 +25,18 @@
   },
   {
     "id": 3,
+    "name": "Puzzle 3",
+    "difficulty": "Level 3",
+    "points": "50",
+    "puzzle_desc": "White to play and Mate in 1 move.",
+    "fen": "2R5/3B4/8/8/8/1K6/8/qk6 w - - 0 1",
+    "solution": [
+      "d7f5"
+    ],
+    "opponentMoves": []
+  },
+  {
+    "id": 4,
     "name": "Puzzle 4",
     "difficulty": "Level 3",
     "points": "50",
@@ -36,11 +48,11 @@
     "opponentMoves": []
   },
   {
-    "id": 4,
+    "id": 5,
     "name": "Puzzle 5",
     "difficulty": "Level 3",
-    "points": "50",
-    "puzzle_desc": "[%evp 0,3,29997,29998,29999,-30000] White to play and Mate in two.",
+    "points": "75",
+    "puzzle_desc": "White to play and Mate in two.",
     "fen": "8/8/5B1k/Q7/8/8/4K3/8 w - - 0 1",
     "solution": [
       "a5g5",
@@ -51,12 +63,12 @@
     ]
   },
   {
-    "id": 5,
-    "name": "Puzzle 8",
+    "id": 6,
+    "name": "Puzzle 6",
     "difficulty": "Level 3",
-    "points": "50",
-    "puzzle_desc": "[%evp 0,5,29995,29996,29997,29998,29999,-30000] White to play & Mate in three.",
-    "fen": "r3r2k/pb2qpp1/1pn1p3/2pp2N1/8/P3P2P/1PP2PP1/R2Q1RK1 w - - 0 1",
+    "points": "75",
+    "puzzle_desc": "White to play and Mate in two.",
+    "fen": "6nk/p4q1p/1p5P/r4PQ1/3P4/8/P5R1/6K1 w - - 0 1",
     "solution": [
       "d1h5",
       "h5h7",
@@ -68,12 +80,12 @@
     ]
   },
   {
-    "id": 6,
-    "name": "Puzzle 11",
+    "id": 7,
+    "name": "Puzzle 7",
     "difficulty": "Level 3",
-    "points": "100",
-    "puzzle_desc": "[%evp 0,5,29995,29996,29997,29998,29999,-30000] White to play and Mate in 3.",
-    "fen": "5rk1/1p1Q2p1/p5P1/q5Np/7N/8/1PP2P1P/4rb1K w - - 0 1",
+    "points": "75",
+    "puzzle_desc": "White to play and Mate in two.",
+    "fen": "1r2r1k1/2p2pp1/1pbp4/3n1Q1p/3P1p1q/p1P2P2/P1B3PN/3RR1K1 w - - 0 1",
     "solution": [
       "d7f7",
       "g6f7",
@@ -85,12 +97,12 @@
     ]
   },
   {
-    "id": 7,
-    "name": "Puzzle 12",
+    "id": 8,
+    "name": "Puzzle 8",
     "difficulty": "Level 3",
     "points": "100",
-    "puzzle_desc": "[%evp 0,5,29995,29996,29997,29998,29999,-30000] White to play and mate in 3.",
-    "fen": "2b3k1/pp3ppp/1b1q4/3B2B1/1P6/P7/2P2PPP/4Q1K1 w - - 0 1",
+    "puzzle_desc": "White to play & Mate in three.",
+    "fen": "r3r2k/pb2qpp1/1pn1p3/2pp2N1/8/P3P2P/1PP2PP1/R2Q1RK1 w - - 0 1",
     "solution": [
       "e1e8",
       "d5f7",
@@ -102,12 +114,12 @@
     ]
   },
   {
-    "id": 8,
+    "id": 9,
     "name": "Puzzle 9",
     "difficulty": "Level 3",
-    "points": "50",
-    "puzzle_desc": "White to play and mate in 3.",
-    "fen": "1k6/4Q3/8/8/4K3/8/8/8 w - - 0 1",
+    "points": "100",
+    "puzzle_desc": "White to play and Mate in 3.",
+    "fen": "5rk1/1p1Q2p1/p5P1/q5Np/7N/8/1PP2P1P/4rb1K w - - 0 1",
     "solution": [
       "e4d5",
       "d5c6",
@@ -137,44 +149,17 @@
     "id": 10,
     "name": "Puzzle 10",
     "difficulty": "Level 3",
-    "points": "50",
-    "puzzle_desc": "[%evp 0,5,29975,29976,29977,29978,29979,29980] [#]",
-    "fen": "4k3/8/3K4/4P3/8/8/8/8 w - - 0 1",
+    "points": "100",
+    "puzzle_desc": "White to play and mate in 3.",
+    "fen": "2b3k1/pp3ppp/1b1q4/3B2B1/1P6/P7/2P2PPP/4Q1K1 w - - 0 1",
     "solution": [
-      "d6e6",
-      "e6f7",
-      "e5e6"
+      "e1e8",
+      "d5f7",
+      "e8f8"
     ],
     "opponentMoves": [
-      "e8d8",
-      "d8d7"
-    ]
-  },
-  {
-    "id": 11,
-    "name": "Puzzle 3",
-    "difficulty": "Level 3",
-    "points": "50",
-    "puzzle_desc": "[%evp 0,1,29999,-30000] White to play and Mate in 1.",
-    "fen": "7R/k7/1r5R/4p3/3nB3/1r1PK3/8/8 w - - 0 1",
-    "solution": [
-      "h8a8"
-    ],
-    "opponentMoves": []
-  },
-  {
-    "id": 12,
-    "name": "Puzzle 6",
-    "difficulty": "Level 3",
-    "points": "50",
-    "puzzle_desc": "White to play and mate in 2.",
-    "fen": "4r3/p1pk2r1/8/2p5/2P1Q3/8/q4PPP/4R1K1 w - - 0 1",
-    "solution": [
-      "e1d1",
-      "e4a8"
-    ],
-    "opponentMoves": [
-      "d7c8"
+      "d6f8",
+      "g8h8"
     ]
   }
 ]
