@@ -418,7 +418,7 @@ export default function Home() {
 
 
   return (
-    <main className="min-h-screen w-full">
+  <main className="min-h-screen w-full overflow-x-hidden">
       {state === "welcome" && <WelcomeScreen onStart={handleStart} />}
       {state === "questions" && (
         <QuestionScreen onComplete={handleQuestionsComplete} />

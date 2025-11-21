@@ -20,7 +20,7 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
             </p>
           <button
             onClick={onStart}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+            className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors duration-200 shadow-md hover:shadow-lg"
           >
             Begin Evaluation
           </button>

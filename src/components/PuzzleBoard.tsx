@@ -22,6 +22,10 @@ const pieceImgs = {
   },
 };
 
+// Use a weakly-typed alias to avoid rendering TypeScript comments in JSX and to allow
+// passing non-standard props like `boardWidth` and `orientation` without compile errors.
+const ChessboardAny: any = Chessboard;
+
 interface PuzzleBoardProps {
   puzzle: Puzzle;
   puzzleNumber: number;
@@ -329,10 +333,12 @@ export default function PuzzleBoard({
   // Helper to get overlay position near promotion square
   const getPromotionOverlayStyle = () => {
     if (!promotionDetails) return { top: "50%", left: "50%" };
-    // Board is always 8x8, use a smaller max width so board + UI fits on laptop screens
-    const BOARD_MAX = 480;
-    const horizontalPadding = 160; // leave space for surrounding UI
-    const boardPx = Math.min(BOARD_MAX, typeof window !== "undefined" ? window.innerWidth - horizontalPadding : BOARD_MAX);
+    // For narrow viewports just center the overlay above the board for better tap targets
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
+      return { top: "50%", left: "50%" };
+    }
+    // Board is always 8x8; use the reactive boardWidth to compute square size
+    const boardPx = boardWidth || 480;
     const squarePx = boardPx / 8;
     const file = promotionDetails.to[0].charCodeAt(0) - "a".charCodeAt(0);
     const rank = 8 - parseInt(promotionDetails.to[1]);
@@ -351,12 +357,30 @@ export default function PuzzleBoard({
   // Determine board orientation: flip if it's black to move
   const boardOrientation = (game && typeof game.turn === 'function' && game.turn() === 'b') ? 'black' : 'white';
 
+  // Dynamically compute board width to avoid overflowing the page on small screens
+  const [boardWidth, setBoardWidth] = useState<number>(480);
+
+  useEffect(() => {
+    const compute = () => {
+      if (typeof window === 'undefined') return;
+      const ww = window.innerWidth;
+      // On small screens leave some margin (32px each side), on larger screens allow room for side columns
+      const horizontalPadding = ww < 768 ? 64 : 240;
+      const maxBoard = 480;
+      const calculated = Math.min(maxBoard, Math.max(240, ww - horizontalPadding));
+      setBoardWidth(calculated);
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
+
   return (
     <div className="w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="w-full px-4">
-        <div className="grid grid-cols-12 gap-4 items-center min-h-[calc(100vh-120px)]">
+    <div className="w-full px-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center min-h-[calc(100vh-120px)]">
           {/* Left column: Rating panel */}
-          <div className="col-span-3 flex items-center justify-center">
+          <div className="md:col-span-3 col-span-1 flex items-center justify-center">
             <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow p-4 md:p-6 w-full max-w-xs transition-transform duration-300 ${ratingPulse ? 'scale-105 animate-pulse' : ''}`}>
               <div className="text-center">
                 <div className="text-sm text-gray-500 dark:text-gray-300 mb-1">Current Points</div>
@@ -368,7 +392,7 @@ export default function PuzzleBoard({
           </div>
 
           {/* Center column: main card with chessboard */}
-          <div className="col-span-6 flex items-center justify-center">
+          <div className="md:col-span-6 col-span-1 flex items-center justify-center">
             <div className="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 max-w-3xl">
               {/* Progress Indicator */}
               <div className="mb-6 text-center">
@@ -398,16 +422,16 @@ export default function PuzzleBoard({
                   ? "ring-4 ring-red-500 rounded-lg"
                   : ""
               }`}>
-                <div className="mx-auto" style={{ width: Math.min(480, typeof window !== "undefined" ? Math.min(window.innerWidth - 240, 880) : 480), position: "relative" }}>
-                  <Chessboard
+                <div className="mx-auto" style={{ width: `${boardWidth}px`, position: "relative" }}>
+                  <ChessboardAny
                     key={`board-${puzzle.id}-${boardPosition}`}
+                    boardWidth={boardWidth}
                     options={{
                       position: boardPosition,
                       onPieceDrop: onDrop,
                       onSquareClick: handleSquareClick,
                       allowDragging: !isComplete && !isOpponentMoving,
                     }}
-                    // @ts-ignore - react-chessboard typing here doesn't include orientation in our installed version
                     orientation={boardOrientation}
                   />
                   {/* Promotion overlay */}
@@ -441,7 +465,7 @@ export default function PuzzleBoard({
           </div>
 
           {/* Right column: feedback & opponent status so board stays static */}
-          <div className="col-span-3 flex items-start justify-center">
+          <div className="md:col-span-3 col-span-1 flex items-start justify-center">
             <div className="w-full max-w-xs">
               {/* Feedback */}
               {feedback && (
