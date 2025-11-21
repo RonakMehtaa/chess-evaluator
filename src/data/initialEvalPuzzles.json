@@ -70,11 +70,13 @@
     "puzzle_desc": "White to play and Mate in two.",
     "fen": "6nk/p4q1p/1p5P/r4PQ1/3P4/8/P5R1/6K1 w - - 0 1",
     "solution": [
-      "g5g7",
-      "h6g7"
+      "d1h5",
+      "h5h7",
+      "h7h8"
     ],
     "opponentMoves": [
-      "f7g7"
+      "h8g8",
+      "g8f8"
     ]
   },
   {
@@ -85,10 +87,12 @@
     "puzzle_desc": "White to play and Mate in two.",
     "fen": "1r2r1k1/2p2pp1/1pbp4/3n1Q1p/3P1p1q/p1P2P2/P1B3PN/3RR1K1 w - - 0 1",
     "solution": [
-      "f5h7",
-      "h7h8"
+      "d7f7",
+      "g6f7",
+      "h4g6"
     ],
     "opponentMoves": [
+      "f8f7",
       "g8f8"
     ]
   },
@@ -100,13 +104,13 @@
     "puzzle_desc": "White to play & Mate in three.",
     "fen": "r3r2k/pb2qpp1/1pn1p3/2pp2N1/8/P3P2P/1PP2PP1/R2Q1RK1 w - - 0 1",
     "solution": [
-      "d1h5",
-      "h5h7",
-      "h7h8"
+      "e1e8",
+      "d5f7",
+      "e8f8"
     ],
     "opponentMoves": [
-      "h8g8",
-      "g8f8"
+      "d6f8",
+      "g8h8"
     ]
   },
   {
@@ -117,13 +121,28 @@
     "puzzle_desc": "White to play and Mate in 3.",
     "fen": "5rk1/1p1Q2p1/p5P1/q5Np/7N/8/1PP2P1P/4rb1K w - - 0 1",
     "solution": [
-      "d7f7",
-      "g6f7",
-      "h4g6"
+      "e4d5",
+      "d5c6",
+      "e7b7"
     ],
     "opponentMoves": [
-      "f8f7",
-      "g8f8"
+      "b8a8",
+      "a8b8"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Puzzle 7",
+    "difficulty": "Level 3",
+    "points": "50",
+    "puzzle_desc": "White to play and mate in 2.",
+    "fen": "3k4/8/8/5K2/8/2R5/8/8 w - - 0 1",
+    "solution": [
+      "f5e6",
+      "c3c8"
+    ],
+    "opponentMoves": [
+      "d8e8"
     ]
   },
   {
