@@ -140,10 +140,10 @@ export default function Home() {
           return acc + parsePoints(p?.points);
         }, 0);
         console.log('Computed initial total (tini) at stop:', tini);
-  let level = 1;
-  if (tini >= 200 && tini < 350) level = 2;
-  else if (tini >= 350 && tini < 500) level = 3;
-  else if (tini >= 500 && tini <= 650) level = 4;
+        let level = 1;
+        if (tini >= 200 && tini < 350) level = 2;
+        else if (tini >= 350 && tini < 500) level = 3;
+        else if (tini >= 500 && tini < 650) level = 4;
         setAssignedLevel(level);
 
         // Decide baseline (start of range) for the assigned level.
@@ -165,9 +165,9 @@ export default function Home() {
 
         const baseline = baselineForLevel(level);
 
-        // If the player's initial rating is already greater than 650,
+        // If the player's initial rating is already greater than or equal to 650,
         // don't show level puzzles — show final rating/results instead.
-        if (tini > 650) {
+        if (tini >= 650) {
           // Use tini as final rating
           setTotalScore(tini);
           if (userId) {
@@ -238,8 +238,8 @@ export default function Home() {
       };
       const baseline = baselineForLevel(level);
 
-      // If initial rating exceeds 650, skip level puzzles and show results
-      if (tini > 650) {
+      // If initial rating exceeds or equals 650, skip level puzzles and show results
+      if (tini >= 650) {
         setTotalScore(tini);
         if (userId) {
           try {

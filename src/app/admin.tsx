@@ -29,10 +29,15 @@ async function fetchUserResults() {
   });
 }
 
+type SortField = 'firstName' | 'lastName' | 'phone' | 'finalRating';
+type SortDirection = 'asc' | 'desc';
+
 export default function AdminDashboard() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
+  const [sortField, setSortField] = useState<SortField>('finalRating');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const router = useRouter();
 
   useEffect(() => {
@@ -47,11 +52,44 @@ export default function AdminDashboard() {
     });
   }, [router]);
 
-  // Filter results by name
-  const filteredResults = results.filter(user => {
-    const name = `${user.firstName} ${user.lastName}`.toLowerCase();
-    return name.includes(filter.toLowerCase());
-  });
+  // Handle column header click for sorting
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      // Toggle direction if same field
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New field, default to ascending (except finalRating defaults to descending)
+      setSortField(field);
+      setSortDirection(field === 'finalRating' ? 'desc' : 'asc');
+    }
+  };
+
+  // Filter and sort results
+  const filteredResults = results
+    .filter(user => {
+      const name = `${user.firstName} ${user.lastName}`.toLowerCase();
+      return name.includes(filter.toLowerCase());
+    })
+    .sort((a, b) => {
+      let aVal = a[sortField];
+      let bVal = b[sortField];
+
+      // Handle string comparison (case-insensitive)
+      if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      }
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+  // Render sort indicator
+  const SortIndicator = ({ field }: { field: SortField }) => {
+    if (sortField !== field) return <span className="text-gray-400 ml-1">↕</span>;
+    return <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
@@ -89,10 +127,30 @@ export default function AdminDashboard() {
             <table className="min-w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">First Name</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Last Name</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Phone</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Final Rating</th>
+                  <th 
+                    onClick={() => handleSort('firstName')}
+                    className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    First Name <SortIndicator field="firstName" />
+                  </th>
+                  <th 
+                    onClick={() => handleSort('lastName')}
+                    className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    Last Name <SortIndicator field="lastName" />
+                  </th>
+                  <th 
+                    onClick={() => handleSort('phone')}
+                    className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    Phone <SortIndicator field="phone" />
+                  </th>
+                  <th 
+                    onClick={() => handleSort('finalRating')}
+                    className="px-6 py-3 border-b-2 border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-gray-600 dark:text-gray-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    Final Rating <SortIndicator field="finalRating" />
+                  </th>
                 </tr>
               </thead>
               <tbody>

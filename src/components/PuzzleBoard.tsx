@@ -252,7 +252,8 @@ export default function PuzzleBoard({
               onSolve(true);
             }, 1500);
           } else {
-            setFeedback("correct");
+            // Don't show "correct" feedback for intermediate moves
+            setFeedback(null);
             playOpponentMove(newFen, moveHistory.length);
             // small pulse for correct intermediate move
             setRatingPulse(true);
@@ -464,7 +465,7 @@ export default function PuzzleBoard({
             </div>
           </div>
 
-          {/* Right column: feedback & opponent status so board stays static */}
+          {/* Right column: feedback */}
           <div className="md:col-span-3 col-span-1 flex items-start justify-center">
             <div className="w-full max-w-xs">
               {/* Feedback */}
@@ -479,13 +480,6 @@ export default function PuzzleBoard({
                   <p className="text-lg font-semibold">
                     {feedback === "correct" ? "✓ Correct! Well done!" : "✗ Incorrect"}
                   </p>
-                </div>
-              )}
-
-              {/* Opponent moving indicator */}
-              {isOpponentMoving && (
-                <div className="text-center py-4 rounded-lg mb-4 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-                  <p className="text-lg font-semibold">Opponent is thinking...</p>
                 </div>
               )}
             </div>
